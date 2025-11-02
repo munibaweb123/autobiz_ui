@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 // @ts-ignore - allow side-effect CSS import
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ToasterProvider } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
         )}
       >
         {children}
+           <ToasterProvider />
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Sparkles, Sun, Moon } from "lucide-react";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 const Header = () => {
@@ -76,13 +77,15 @@ const Header = () => {
             </Button>
 
             {/* Get Started - always visible, with clear text color */}
-            <Button
-              className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-[#7C3AED] to-[#EC4899] text-white rounded-md shadow-md hover:brightness-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C3AED]/40"
-              aria-label="Get Started Free"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">Get Started Free</span>
-            </Button>
+            <Link href="/signUp">
+              <Button
+                className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-[#7C3AED] to-[#EC4899] text-white rounded-md shadow-md hover:brightness-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C3AED]/40"
+                aria-label="Get Started Free"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span className="text-sm font-medium">Get Started Free</span>
+              </Button>
+            </Link>
             
             {/* Mobile Menu */}
             <Sheet open={open} onOpenChange={setOpen}>
@@ -125,7 +128,7 @@ const Header = () => {
                     </Button>
                     <Button className="w-full bg-gradient-to-br from-[#7C3AED] to-[#EC4899] text-white rounded-md shadow-md hover:brightness-95 transition-opacity">
                       <Sparkles className="w-4 h-4 mr-2" />
-                      Get Started Free
+                      <Link href={"/signUp"}>Get Started Free</Link>
                     </Button>
                   </div>
                 </nav>
