@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Bell, Sun, Upload, Plus } from "lucide-react";
+import { Search, Bell, Sun, Upload, Plus, Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
 type Invoice = {
@@ -14,12 +14,27 @@ type Invoice = {
 };
 
 const dummyInvoices: Invoice[] = [
-  { id: "INV-001", client: "ABC Traders", date: "20/10/2025", dueDate: "27/10/2025", amount: 25000, status: "Paid" },
-  { id: "INV-002", client: "Best Distributors", date: "21/10/2025", dueDate: "28/10/2025", amount: 48000, status: "Pending" },
+  {
+    id: "INV-001",
+    client: "ABC Traders",
+    date: "20/10/2025",
+    dueDate: "27/10/2025",
+    amount: 25000,
+    status: "Paid",
+  },
+  {
+    id: "INV-002",
+    client: "Best Distributors",
+    date: "21/10/2025",
+    dueDate: "28/10/2025",
+    amount: 48000,
+    status: "Pending",
+  },
 ];
 
 export default function InvoicesPage() {
   const [search, setSearch] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const filtered = dummyInvoices.filter(
     (i) =>
@@ -28,21 +43,47 @@ export default function InvoicesPage() {
   );
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="hidden md:block">
-              <Sidebar />
-            </div>
+    <div className="flex flex-col md:flex-row h-screen bg-gray-50">
+      {/* Sidebar (Desktop) */}
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
+
+      {/* Sidebar (Mobile Drawer) */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          <div
+            className="w-64 bg-white shadow-lg h-full animate-slideIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Sidebar />
+          </div>
+          <div
+            className="flex-1 bg-black/40"
+            onClick={() => setSidebarOpen(false)}
+          />
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b px-4 sm:px-6 py-3 flex items-center justify-between">
-          <input
-            type="text"
-            placeholder="Search clients, invoices, products..."
-            className="hidden sm:block border rounded-lg px-4 py-2 w-1/2"
-          />
+        <header className="bg-white border-b px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {/* Hamburger Button (Mobile) */}
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 border rounded-md hover:bg-gray-100"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            <input
+              type="text"
+              placeholder="Search clients, invoices, products..."
+              className="hidden sm:block border rounded-lg px-4 py-2 w-72"
+            />
+          </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
             <Bell className="w-5 h-5" />
@@ -125,7 +166,9 @@ export default function InvoicesPage() {
                       <td className="p-3">{i.client}</td>
                       <td className="p-3">{i.date}</td>
                       <td className="p-3">{i.dueDate}</td>
-                      <td className="p-3 text-green-600">Rs {i.amount.toLocaleString()}</td>
+                      <td className="p-3 text-green-600">
+                        Rs {i.amount.toLocaleString()}
+                      </td>
                       <td className="p-3">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -189,7 +232,9 @@ export default function InvoicesPage() {
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-500 text-sm">No invoices found</p>
+              <p className="text-center text-gray-500 text-sm">
+                No invoices found
+              </p>
             )}
           </div>
         </div>

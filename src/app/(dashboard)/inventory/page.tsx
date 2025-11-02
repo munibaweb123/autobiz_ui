@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Bell, Sun, Plus, Edit3, Trash2, AlertTriangle } from "lucide-react";
+import {
+  Search,
+  Bell,
+  Sun,
+  Plus,
+  Edit3,
+  Trash2,
+  AlertTriangle,
+  Menu,
+} from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
 type Product = {
@@ -22,6 +31,7 @@ const dummyProducts: Product[] = [
 
 export default function InventoryPage() {
   const [search, setSearch] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const filtered = dummyProducts.filter(
     (p) =>
@@ -32,20 +42,46 @@ export default function InventoryPage() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="hidden md:block">
+      {/* Sidebar (Desktop) */}
+      <div className="hidden lg:block">
         <Sidebar />
       </div>
+
+      {/* Sidebar (Mobile Drawer) */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          <div
+            className="w-64 bg-white shadow-lg h-full animate-slideIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Sidebar />
+          </div>
+          <div
+            className="flex-1 bg-black/40"
+            onClick={() => setSidebarOpen(false)}
+          />
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="bg-white border-b px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-          <input
-            type="text"
-            placeholder="Search clients, invoices, products..."
-            className="border rounded-lg px-4 py-2 w-full sm:w-2/3 md:w-1/2"
-          />
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {/* Hamburger Button for Mobile */}
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 border rounded-md hover:bg-gray-100"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            <input
+              type="text"
+              placeholder="Search clients, invoices, products..."
+              className="border rounded-lg px-4 py-2 w-full sm:w-80"
+            />
+          </div>
 
           <div className="flex items-center gap-4">
             <Bell className="w-5 h-5" />
@@ -98,7 +134,7 @@ export default function InventoryPage() {
           </button>
         </div>
 
-        {/* Table (Responsive) */}
+        {/* Table */}
         <div className="px-4 md:px-6 overflow-auto">
           <div className="w-full bg-white rounded-lg border text-sm overflow-x-auto">
             <table className="w-full min-w-[800px]">

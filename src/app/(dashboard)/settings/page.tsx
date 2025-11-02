@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Sun, User, Mail, Phone, Building } from "lucide-react";
+import { Bell, Sun, User, Mail, Phone, Building, Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
 export default function SettingsPage() {
@@ -13,6 +13,7 @@ export default function SettingsPage() {
   });
 
   const [activeTab, setActiveTab] = useState("Profile");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,25 +26,46 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
+      {/* Sidebar (desktop) */}
       <div className="hidden md:block">
-              <Sidebar />
-            </div>
+        <Sidebar />
+      </div>
+
+      {/* Sidebar overlay (mobile) */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-40 flex md:hidden">
+          <div
+            className="fixed inset-0 bg-black/40"
+            onClick={() => setSidebarOpen(false)}
+          ></div>
+          <div className="relative z-50 w-64 bg-white shadow-lg">
+            <Sidebar />
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="bg-white border-b px-4 sm:px-6 py-3 flex items-center justify-between">
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu className="w-5 h-5 text-gray-700" />
+          </button>
+
           <input
             type="text"
             placeholder="Search clients, invoices, products..."
-            className="hidden sm:block border rounded-lg px-4 py-2 w-1/2"
+            className="hidden sm:block border rounded-lg px-4 py-2 w-1/2 text-sm"
           />
 
           <div className="flex items-center gap-3 sm:gap-4">
-            <Bell className="w-5 h-5" />
-            <Sun className="w-5 h-5" />
+            <Bell className="w-5 h-5 text-gray-600" />
+            <Sun className="w-5 h-5 text-gray-600" />
             <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
               A
             </div>
@@ -140,7 +162,7 @@ export default function SettingsPage() {
                     </label>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-full border border-blue-200">
-                        trader
+                        Trader
                       </span>
                       <p className="text-xs text-gray-500">
                         Contact admin to change your role
