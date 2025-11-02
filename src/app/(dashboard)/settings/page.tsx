@@ -5,7 +5,6 @@ import { Bell, Sun, User, Mail, Phone, Building } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
 export default function SettingsPage() {
-  // Form state
   const [formData, setFormData] = useState({
     fullName: "Ahmed",
     phone: "+92 300 1234567",
@@ -28,18 +27,21 @@ export default function SettingsPage() {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <Sidebar />
+      <div className="hidden md:block">
+              <Sidebar />
+            </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b px-6 py-3 flex items-center justify-between">
+        <header className="bg-white border-b px-4 sm:px-6 py-3 flex items-center justify-between">
           <input
             type="text"
             placeholder="Search clients, invoices, products..."
-            className="border rounded-lg px-4 py-2 w-1/2"
+            className="hidden sm:block border rounded-lg px-4 py-2 w-1/2"
           />
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-3 sm:gap-4">
             <Bell className="w-5 h-5" />
             <Sun className="w-5 h-5" />
             <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
@@ -49,20 +51,20 @@ export default function SettingsPage() {
         </header>
 
         {/* Settings Content */}
-        <div className="p-6">
-          <h1 className="text-2xl font-bold">Settings</h1>
-          <p className="text-gray-600 mb-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <h1 className="text-xl sm:text-2xl font-bold">Settings</h1>
+          <p className="text-gray-600 mb-6 text-sm sm:text-base">
             Manage your account settings and preferences
           </p>
 
           {/* Tabs */}
-          <div className="flex gap-3 mb-6">
+          <div className="flex flex-wrap gap-2 sm:gap-3 mb-6">
             {["Profile", "Security", "Notifications", "Integrations"].map(
               (tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium border ${
+                  className={`px-3 sm:px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-200 ${
                     activeTab === tab
                       ? "bg-blue-600 text-white border-blue-600"
                       : "bg-white text-gray-700 hover:bg-gray-100"
@@ -76,13 +78,13 @@ export default function SettingsPage() {
 
           {/* Profile Tab */}
           {activeTab === "Profile" && (
-            <div className="bg-white border rounded-lg p-6">
+            <div className="bg-white border rounded-lg p-4 sm:p-6 shadow-sm">
               <h2 className="text-lg font-semibold mb-4 text-gray-800">
                 Profile Information
               </h2>
 
               {/* Profile Photo */}
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-green-500 flex items-center justify-center text-white text-xl font-bold">
                   {formData.fullName.charAt(0)}
                 </div>
@@ -97,7 +99,7 @@ export default function SettingsPage() {
               </div>
 
               {/* Form Fields */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {/* Left Column */}
                 <div className="flex flex-col gap-4">
                   <div>
@@ -136,7 +138,7 @@ export default function SettingsPage() {
                     <label className="text-sm text-gray-700 mb-1 block">
                       Role
                     </label>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded-full border border-blue-200">
                         trader
                       </span>
@@ -185,10 +187,10 @@ export default function SettingsPage() {
               </div>
 
               {/* Save Button */}
-              <div className="mt-8">
+              <div className="mt-8 flex justify-end">
                 <button
                   onClick={handleSave}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium w-full sm:w-auto"
                 >
                   Save Changes
                 </button>
@@ -196,9 +198,9 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {/* Placeholder for Other Tabs */}
+          {/* Other Tabs Placeholder */}
           {activeTab !== "Profile" && (
-            <div className="bg-white border rounded-lg p-6 text-gray-500 text-sm text-center py-20">
+            <div className="bg-white border rounded-lg p-6 text-gray-500 text-sm text-center py-20 shadow-sm">
               Settings for{" "}
               <span className="font-semibold">{activeTab}</span> will appear
               here.

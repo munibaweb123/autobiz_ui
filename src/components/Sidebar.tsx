@@ -1,9 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Sparkles,
   LayoutDashboard,
@@ -14,6 +23,7 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  Menu,
 } from "lucide-react";
 
 const menuItems = [
@@ -29,12 +39,12 @@ const menuItems = [
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   const logout = () => router.push("/signin");
 
-  return (
-    <aside className="w-64 bg-card border-r flex flex-col">
-      
+  const NavigationContent = () => (
+    <>
       {/* Logo */}
       <div className="p-4 flex items-center gap-2 border-b">
         <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
@@ -53,8 +63,15 @@ export default function Sidebar() {
             <Button
               key={item.name}
               variant={isActive ? "default" : "ghost"}
-              className="w-full justify-start gap-2"
-              onClick={() => router.push(item.path)}
+              className={`w-full justify-start gap-2 ${
+                isActive
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : ""
+              }`}
+              onClick={() => {
+                router.push(item.path);
+                setOpen(false); // close mobile menu after navigation
+              }}
             >
               <Icon className="h-4 w-4" />
               {item.name}
@@ -75,18 +92,48 @@ export default function Sidebar() {
               <p className="text-xs text-muted-foreground">muniba@gmail.com</p>
             </div>
           </div>
-          <Badge variant="secondary" className="text-xs">admin</Badge>
+          <Badge variant="secondary" className="text-xs">
+            admin
+          </Badge>
         </div>
 
         <Button
           variant="ghost"
-          className="w-full justify-start gap-2"
+          className="w-full justify-start gap-2 text-red-600 hover:bg-red-50"
           onClick={logout}
         >
           <LogOut className="h-4 w-4" />
           Sign Out
         </Button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* ✅ Mobile Menu Button (works now) */}
+      <div className="lg:hidden fixed top-4 left-4 z-50">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+
+          <SheetContent side="left" className="p-0 w-64">
+            <SheetHeader className="px-4 py-2 border-b">
+              <SheetTitle>Navigation Menu</SheetTitle>
+              <SheetDescription>Navigate between app sections</SheetDescription>
+            </SheetHeader>
+            <NavigationContent />
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex w-64 bg-card border-r flex-col">
+        <NavigationContent />
+      </aside>
+    </>
   );
 }

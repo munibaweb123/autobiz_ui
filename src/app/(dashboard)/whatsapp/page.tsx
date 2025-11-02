@@ -21,21 +21,23 @@ export default function WhatsAppPage() {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar */}
-      <Sidebar />
+      <div className="hidden md:block">
+              <Sidebar />
+            </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b px-6 py-3 flex items-center justify-between">
+        <header className="bg-white border-b px-4 md:px-6 py-3 flex flex-col md:flex-row gap-3 md:gap-0 md:items-center md:justify-between">
           <input
             type="text"
             placeholder="Search clients, invoices, products..."
-            className="border rounded-lg px-4 py-2 w-1/2"
+            className="border rounded-lg px-4 py-2 w-full md:w-1/2"
           />
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 self-end md:self-auto">
             <Bell className="w-5 h-5" />
             <Sun className="w-5 h-5" />
             <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
@@ -45,19 +47,19 @@ export default function WhatsAppPage() {
         </header>
 
         {/* WhatsApp Header */}
-        <div className="p-6">
-          <h1 className="text-2xl font-bold">WhatsApp Automation</h1>
-          <p className="text-gray-600 mb-6">
+        <div className="p-4 md:p-6 overflow-y-auto flex-1">
+          <h1 className="text-xl md:text-2xl font-bold">WhatsApp Automation</h1>
+          <p className="text-gray-600 mb-6 text-sm md:text-base">
             Manage client communications and automate messages
           </p>
 
           {/* Stats Section */}
-          <div className="grid grid-cols-3 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             <div className="bg-white border rounded-lg p-4 flex items-center gap-3">
               <MessageCircle className="w-6 h-6 text-blue-600" />
               <div>
                 <p className="text-gray-500 text-sm">Messages Sent</p>
-                <h2 className="text-xl font-semibold">0</h2>
+                <h2 className="text-lg md:text-xl font-semibold">0</h2>
               </div>
             </div>
 
@@ -65,7 +67,7 @@ export default function WhatsAppPage() {
               <Users className="w-6 h-6 text-green-600" />
               <div>
                 <p className="text-gray-500 text-sm">Active Contacts</p>
-                <h2 className="text-xl font-semibold">231</h2>
+                <h2 className="text-lg md:text-xl font-semibold">231</h2>
               </div>
             </div>
 
@@ -73,13 +75,13 @@ export default function WhatsAppPage() {
               <Clock className="w-6 h-6 text-purple-600" />
               <div>
                 <p className="text-gray-500 text-sm">Scheduled</p>
-                <h2 className="text-xl font-semibold">0</h2>
+                <h2 className="text-lg md:text-xl font-semibold">0</h2>
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
               Bulk Message
             </button>
@@ -89,7 +91,7 @@ export default function WhatsAppPage() {
           </div>
 
           {/* Messaging Section */}
-          <div className="grid grid-cols-3 gap-4 h-[60vh]">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[65vh]">
             {/* Contacts List */}
             <div className="bg-white border rounded-lg p-4 overflow-y-auto">
               <h2 className="text-gray-700 font-semibold mb-3">Contacts</h2>
@@ -104,42 +106,54 @@ export default function WhatsAppPage() {
                         : "hover:bg-gray-50"
                     }`}
                   >
-                    <p className="font-medium text-gray-800">{c.name}</p>
-                    <p className="text-sm text-gray-500">{c.phone}</p>
+                    <p className="font-medium text-gray-800 text-sm md:text-base">
+                      {c.name}
+                    </p>
+                    <p className="text-xs md:text-sm text-gray-500">
+                      {c.phone}
+                    </p>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Chat Window */}
-            <div className="col-span-2 bg-white border rounded-lg flex flex-col justify-center items-center text-gray-400 text-sm">
+            <div className="lg:col-span-2 bg-white border rounded-lg flex flex-col justify-center items-center text-gray-400 text-sm">
               {selectedContact ? (
                 <div className="flex flex-col w-full h-full justify-between">
-                  <div className="border-b p-4 bg-gray-50 flex justify-between items-center">
+                  <div className="border-b p-3 md:p-4 bg-gray-50 flex justify-between items-center">
                     <div>
-                      <h2 className="font-medium text-gray-800">{selectedContact.name}</h2>
-                      <p className="text-xs text-gray-500">{selectedContact.phone}</p>
+                      <h2 className="font-medium text-gray-800 text-sm md:text-base">
+                        {selectedContact.name}
+                      </h2>
+                      <p className="text-xs text-gray-500">
+                        {selectedContact.phone}
+                      </p>
                     </div>
-                    <span className="text-xs text-gray-500">Chat Window</span>
+                    <span className="text-xs text-gray-500 hidden sm:block">
+                      Chat Window
+                    </span>
                   </div>
 
-                  <div className="flex-1 flex items-center justify-center text-gray-400">
+                  <div className="flex-1 flex items-center justify-center text-gray-400 text-xs md:text-sm px-2 text-center">
                     Message history will appear here
                   </div>
 
-                  <div className="border-t p-3 flex gap-3">
+                  <div className="border-t p-2 md:p-3 flex gap-2 md:gap-3">
                     <input
                       type="text"
                       placeholder="Type a message..."
-                      className="flex-1 border rounded-lg px-3 py-2"
+                      className="flex-1 border rounded-lg px-3 py-2 text-sm"
                     />
-                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm">
                       Send
                     </button>
                   </div>
                 </div>
               ) : (
-                <p>Select a contact to start messaging</p>
+                <p className="text-xs md:text-sm text-center p-4">
+                  Select a contact to start messaging
+                </p>
               )}
             </div>
           </div>
