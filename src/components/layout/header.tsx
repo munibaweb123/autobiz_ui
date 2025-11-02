@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { Menu, Sparkles, Sun, Moon } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
   const navLinks = [
     { href: "/features", label: "Features" },
@@ -12,6 +13,26 @@ const Header = () => {
     { href: "/pricing", label: "Pricing" },
     { href: "/contact", label: "Contact" },
   ];
+
+  useEffect(() => {
+    // initialize theme from localStorage or system preference
+    const stored = localStorage.getItem("theme") as "light" | "dark" | null;
+    if (stored) {
+      setTheme(stored);
+      document.documentElement.classList.toggle("dark", stored === "dark");
+    } else {
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(prefersDark ? "dark" : "light");
+      document.documentElement.classList.toggle("dark", prefersDark);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -41,9 +62,26 @@ const Header = () => {
             <Button variant="ghost" className="hidden md:inline-flex">
               Sign In
             </Button>
-            <Button className="hidden sm:inline-flex bg-gradient-primary hover:opacity-90 transition-opacity">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Get Started Free
+
+            {/* Theme toggle button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+              aria-pressed={theme === "dark"}
+              className="hidden sm:inline-flex"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </Button>
+
+            {/* Get Started - always visible, with clear text color */}
+            <Button
+              className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-primary text-white rounded-md hover:opacity-90 transition-opacity"
+              aria-label="Get Started Free"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span className="text-sm font-medium">Get Started Free</span>
             </Button>
             
             {/* Mobile Menu */}
@@ -65,6 +103,22 @@ const Header = () => {
                       {link.label}
                     </a>
                   ))}
+
+                  {/* Mobile theme toggle inside sheet */}
+                  <div className="mt-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        toggleTheme();
+                        setOpen(false);
+                      }}
+                      className="w-full justify-start"
+                    >
+                      {theme === "dark" ? <Sun className="w-4 h-4 mr-2" /> : <Moon className="w-4 h-4 mr-2" />}
+                      {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                    </Button>
+                  </div>
+
                   <div className="flex flex-col gap-3 mt-4 pt-4 border-t">
                     <Button variant="ghost" className="w-full justify-start">
                       Sign In

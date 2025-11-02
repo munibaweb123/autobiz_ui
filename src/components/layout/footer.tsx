@@ -38,7 +38,7 @@ const contactInfo = [
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 dark:bg-gray-950">
+    <footer className="bg-muted/30 border-t border-border">
       <div className="container mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4 lg:grid-cols-5">
           {/* Logo & Socials */}
