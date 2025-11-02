@@ -1,3 +1,4 @@
+'use client';
 import { Users, FileText, Package, MessageSquare, BarChart3, Sparkles, Settings, ArrowRight, Building2, UtensilsCrossed, ShoppingCart, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

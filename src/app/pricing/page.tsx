@@ -3,7 +3,7 @@ import { useState } from "react";
 import { CheckCircle2, X, CreditCard, Building2, Smartphone, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { AppHeader } from "@/components/layout/header";
+import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
 
@@ -122,7 +122,7 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      <Header />
       <main>
         {/* Hero Section */}
         <section className="pt-32 pb-12 px-4">
