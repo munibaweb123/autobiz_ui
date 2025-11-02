@@ -77,7 +77,7 @@ const Header = () => {
 
             {/* Get Started - always visible, with clear text color */}
             <Button
-              className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-primary text-white rounded-md hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 px-3 py-2 bg-gradient-to-br from-[#7C3AED] to-[#EC4899] text-white rounded-md shadow-md hover:brightness-95 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7C3AED]/40"
               aria-label="Get Started Free"
             >
               <Sparkles className="w-4 h-4" />
@@ -123,7 +123,7 @@ const Header = () => {
                     <Button variant="ghost" className="w-full justify-start">
                       Sign In
                     </Button>
-                    <Button className="w-full bg-gradient-primary hover:opacity-90 transition-opacity">
+                    <Button className="w-full bg-gradient-to-br from-[#7C3AED] to-[#EC4899] text-white rounded-md shadow-md hover:brightness-95 transition-opacity">
                       <Sparkles className="w-4 h-4 mr-2" />
                       Get Started Free
                     </Button>

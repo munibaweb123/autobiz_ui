@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -7,6 +8,7 @@ import {
   Zap,
   TrendingUp,
 } from "lucide-react";
+import dashboardImg from "@/assets/dashboard-hero.png"; // <-- add your image here
 
 export function HeroSection() {
   return (
@@ -61,7 +63,7 @@ export function HeroSection() {
             {/* Placeholder for the dashboard image */}
             <div className="relative rounded-2xl border border-gray-200 bg-white p-2 shadow-2xl dark:border-gray-800 dark:bg-gray-900">
               <div className="aspect-video w-full rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
-                <div className="flex justify-between">
+                <div className="flex justify-between z-10">
                   <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                     Business Dashboard
                   </span>
@@ -71,9 +73,15 @@ export function HeroSection() {
                     <div className="h-3 w-3 rounded-full bg-green-400"></div>
                   </div>
                 </div>
-                <div className="mt-4 h-3/4 w-full rounded-md bg-gray-200 dark:bg-gray-700">
-                  {/* Placeholder for chart */}
-                  <TrendingUp className="h-1/2 w-1/2 text-gray-400 dark:text-gray-500" />
+
+                <div className="mt-4 h-3/4 w-full rounded-md overflow-hidden bg-gray-200 dark:bg-gray-700 relative">
+                  {/* Actual dashboard image from assets */}
+                  <Image
+                    src={dashboardImg}
+                    alt="Dashboard mockup"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </div>
             </div>
