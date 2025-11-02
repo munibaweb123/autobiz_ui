@@ -8,9 +8,10 @@ import whatsappImage from "@/assets/whatsapp-module.jpg";
 import analyticsImage from "@/assets/analytics-module.jpg";
 import aiImage from "@/assets/ai-module.jpg";
 import settingsImage from "@/assets/settings-module.jpg";
-import { AppHeader } from "@/components/layout/header";
+
 import { Footer } from "@/components/layout/footer";
 import Image from "next/image";
+import Header from "@/components/layout/header";
 
 const Modules = () => {
   const modules = [
@@ -170,7 +171,7 @@ const Modules = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      <Header />
       <main>
         {/* Hero Section */}
         <section className="pt-32 pb-20 px-4">

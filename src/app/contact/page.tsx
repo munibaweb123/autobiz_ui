@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Phone, Mail, MessageCircle, Clock, Headphones, MapPin, Send } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-import { AppHeader } from "@/components/layout/header";
+
 import { Footer } from "@/components/layout/footer";
 
 import supportTeamImg from "@/assets/support-team.jpg";
@@ -14,11 +14,12 @@ import officeKarachiImg from "@/assets/office-karachi.jpg";
 import officeLahoreImg from "@/assets/office-lahore.jpg";
 import officeIslamabadImg from "@/assets/office-islamabad.jpg";
 import Image from "next/image";
+import Header from "@/components/layout/header";
 
 const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      <Header />
       
       {/* Hero Section */}
       <section className="pt-32 pb-16 px-4">

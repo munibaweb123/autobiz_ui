@@ -27,9 +27,10 @@ import inventoryImage from "@/assets/inventory-module.jpg";
 import whatsappImage from "@/assets/whatsapp-module.jpg";
 import analyticsImage from "@/assets/analytics-module.jpg";
 import aiImage from "@/assets/ai-module.jpg";
-import { AppHeader } from "@/components/layout/header";
+
 import Image from "next/image";
 import { Footer } from "@/components/layout/footer";
+import Header from "@/components/layout/header";
 
 const Features = () => {
   const features = [
@@ -192,7 +193,7 @@ const Features = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      <Header />
       
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4">
