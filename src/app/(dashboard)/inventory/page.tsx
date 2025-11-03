@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/ui/button";
+import { Moon } from "lucide-react";
 import {
   Search,
   Bell,
@@ -30,8 +33,9 @@ const dummyProducts: Product[] = [
 ];
 
 export default function InventoryPage() {
+  const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+
 
   const filtered = dummyProducts.filter(
     (p) =>
@@ -41,40 +45,17 @@ export default function InventoryPage() {
   );
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-50">
-      {/* Sidebar (Desktop) */}
-      <div className="hidden lg:block">
-        <Sidebar />
-      </div>
+    <div className="flex flex-col md:flex-row h-screen bg-background">
+      <Sidebar />
 
-      {/* Sidebar (Mobile Drawer) */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-50 flex">
-          <div
-            className="w-64 bg-white shadow-lg h-full animate-slideIn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Sidebar />
-          </div>
-          <div
-            className="flex-1 bg-black/40"
-            onClick={() => setSidebarOpen(false)}
-          />
-        </div>
-      )}
+
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+        <header className="bg-card border-b border-border px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            {/* Hamburger Button for Mobile */}
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 border rounded-md hover:bg-gray-100"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
+
 
             <input
               type="text"
@@ -85,7 +66,9 @@ export default function InventoryPage() {
 
           <div className="flex items-center gap-4">
             <Bell className="w-5 h-5" />
-            <Sun className="w-5 h-5" />
+                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
             <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
               A
             </div>
@@ -96,7 +79,7 @@ export default function InventoryPage() {
         <div className="p-4 md:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <h1 className="text-xl md:text-2xl font-bold">Inventory</h1>
-            <p className="text-gray-600 text-sm md:text-base">
+            <p className="text-muted-foreground text-sm md:text-base">
               Track and manage your product inventory
             </p>
           </div>
@@ -125,20 +108,20 @@ export default function InventoryPage() {
               placeholder="Search products by name, SKU, or category..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border px-10 py-2 rounded-lg w-full bg-white"
+              className="border-border border px-10 py-2 rounded-lg w-full bg-card"
             />
           </div>
 
-          <button className="border px-4 py-2 rounded-lg bg-white hover:bg-gray-100 text-sm w-full sm:w-auto">
+          <button className="border-border border px-4 py-2 rounded-lg bg-card hover:bg-muted text-sm w-full sm:w-auto">
             Export
           </button>
         </div>
 
         {/* Table */}
         <div className="px-4 md:px-6 overflow-auto">
-          <div className="w-full bg-white rounded-lg border text-sm overflow-x-auto">
+          <div className="w-full bg-card rounded-lg border-border border text-sm overflow-x-auto">
             <table className="w-full min-w-[800px]">
-              <thead className="bg-gray-100 text-gray-600">
+              <thead className="bg-muted text-muted-foreground">
                 <tr>
                   <th className="p-3 text-left">Product Name</th>
                   <th className="p-3 text-left">SKU</th>
@@ -157,8 +140,8 @@ export default function InventoryPage() {
                   return (
                     <tr
                       key={i}
-                      className={`border-b ${
-                        isLowStock ? "bg-red-50" : "hover:bg-gray-50"
+                      className={`border-b border-border ${
+                        isLowStock ? "bg-destructive/10" : "hover:bg-muted"
                       }`}
                     >
                       <td className="p-3">{p.name}</td>
@@ -181,8 +164,8 @@ export default function InventoryPage() {
                         )}
                       </td>
                       <td className="p-3 flex justify-end gap-3">
-                        <Edit3 className="w-4 h-4 cursor-pointer text-gray-600 hover:text-blue-600" />
-                        <Trash2 className="w-4 h-4 cursor-pointer text-gray-600 hover:text-red-600" />
+                        <Edit3 className="w-4 h-4 cursor-pointer text-muted-foreground hover:text-primary" />
+                        <Trash2 className="w-4 h-4 cursor-pointer text-muted-foreground hover:text-destructive" />
                       </td>
                     </tr>
                   );

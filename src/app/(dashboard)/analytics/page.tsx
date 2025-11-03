@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/ui/button";
+import { Moon } from "lucide-react";
 import {
   Bell,
   Sun,
@@ -61,17 +64,18 @@ const messageData = [
 ];
 
 export default function AnalyticsPage() {
+  const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("Revenue");
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-64 transition-all duration-300">
         {/* Header */}
-        <header className="bg-white border-b px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-40 shadow-sm">
+        <header className="bg-card border-b border-border px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-40 shadow-sm">
           <input
             type="text"
             placeholder="Search clients, invoices, products..."
@@ -79,7 +83,9 @@ export default function AnalyticsPage() {
           />
           <div className="flex items-center gap-4">
             <Bell className="w-5 h-5" />
-            <Sun className="w-5 h-5" />
+                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
             <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
               A
             </div>
@@ -89,7 +95,7 @@ export default function AnalyticsPage() {
         {/* Analytics Content */}
         <div className="p-4 sm:p-6 overflow-x-hidden">
           <h1 className="text-xl sm:text-2xl font-bold">Analytics & Reports</h1>
-          <p className="text-gray-600 mb-6 text-sm sm:text-base">
+          <p className="text-muted-foreground mb-6 text-sm sm:text-base">
             Comprehensive business insights and performance metrics
           </p>
 
@@ -127,10 +133,10 @@ export default function AnalyticsPage() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white border rounded-lg p-4 hover:shadow-sm transition"
+                className="bg-card border-border border rounded-lg p-4 hover:shadow-sm transition"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-gray-500 text-sm">{item.label}</p>
+                  <p className="text-muted-foreground text-sm">{item.label}</p>
                   <item.icon className={`w-5 h-5 ${item.color}`} />
                 </div>
                 <h2 className="text-2xl font-semibold">{item.value}</h2>
@@ -153,10 +159,10 @@ export default function AnalyticsPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-full border text-sm font-medium ${
+                className={`px-4 py-2 rounded-full border-border border text-sm font-medium ${
                   activeTab === tab
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-card text-foreground hover:bg-muted"
                 }`}
               >
                 {tab}
@@ -168,8 +174,8 @@ export default function AnalyticsPage() {
 
           {/* REVENUE TAB */}
           {activeTab === "Revenue" && (
-            <div className="bg-white border rounded-lg p-4 sm:p-6">
-              <h2 className="text-gray-700 font-semibold mb-4">
+            <div className="bg-card border-border border rounded-lg p-4 sm:p-6">
+              <h2 className="text-foreground font-semibold mb-4">
                 Revenue & Profit Trends
               </h2>
               <div className="h-[320px]">
@@ -202,8 +208,8 @@ export default function AnalyticsPage() {
 
           {/* CLIENTS TAB */}
           {activeTab === "Clients" && (
-            <div className="bg-white border rounded-lg p-4 sm:p-6">
-              <h2 className="text-gray-700 font-semibold mb-4">
+            <div className="bg-card border-border border rounded-lg p-4 sm:p-6">
+              <h2 className="text-foreground font-semibold mb-4">
                 Client Growth Over Time
               </h2>
 
@@ -233,8 +239,8 @@ export default function AnalyticsPage() {
 
           {/* PRODUCTS TAB */}
           {activeTab === "Products" && (
-            <div className="bg-white border rounded-lg p-4 sm:p-6">
-              <h2 className="text-gray-700 font-semibold mb-4">
+            <div className="bg-card border-border border rounded-lg p-4 sm:p-6">
+              <h2 className="text-foreground font-semibold mb-4">
                 Product Performance
               </h2>
               <div className="h-[320px]">
@@ -253,8 +259,8 @@ export default function AnalyticsPage() {
 
           {/* MESSAGES TAB */}
           {activeTab === "Messages" && (
-            <div className="bg-white border rounded-lg p-4 sm:p-6">
-              <h2 className="text-gray-700 font-semibold mb-4">
+            <div className="bg-card border-border border rounded-lg p-4 sm:p-6">
+              <h2 className="text-foreground font-semibold mb-4">
                 Message Activity
               </h2>
               <div className="h-[320px]">

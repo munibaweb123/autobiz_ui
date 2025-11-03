@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useTheme } from "@/hooks/use-theme";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,8 +17,8 @@ import Sidebar from "@/components/Sidebar";
 
 const Dashboard = () => {
   const router = useRouter();
-  const [isDark, setIsDark] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+
 
   const handleLogout = () => router.push("/signin");
 
@@ -46,38 +46,16 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-background overflow-hidden">
-      {/* Sidebar for desktop */}
-      <div className="hidden md:block">
-        <Sidebar />
-      </div>
+      <Sidebar />
 
-      {/* Sidebar drawer for mobile */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-50 flex">
-          <div className="w-64 bg-white shadow-lg h-full">
-            <Sidebar />
-          </div>
-          <div
-            className="flex-1 bg-black/40"
-            onClick={() => setSidebarOpen(false)}
-          />
-        </div>
-      )}
+
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col transition-all duration-300 lg:ml-64">
         {/* Header */}
         <header className="border-b bg-card px-4 py-3 flex flex-col sm:flex-row gap-3 sm:gap-0 items-center justify-between sticky top-0 z-40">
           <div className="flex items-center gap-3 w-full sm:w-1/2">
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
+
 
             {/* Search Bar */}
             <div className="relative w-full">
@@ -97,8 +75,8 @@ const Dashboard = () => {
                 3
               </span>
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setIsDark(!isDark)}>
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
             <Avatar>
               <AvatarFallback className="bg-primary text-primary-foreground">M</AvatarFallback>

@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/ui/button";
+import { Moon } from "lucide-react";
 import {
   Bell,
   Sun,
@@ -17,6 +20,7 @@ import {
 import Sidebar from "@/components/Sidebar";
 
 export default function SettingsPage() {
+  const { theme, toggleTheme } = useTheme();
   const [formData, setFormData] = useState({
     fullName: "Ahmed",
     phone: "+92 300 1234567",
@@ -25,7 +29,7 @@ export default function SettingsPage() {
   });
 
   const [activeTab, setActiveTab] = useState("Profile");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+
 
   // Security
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
@@ -80,35 +84,16 @@ export default function SettingsPage() {
   const handleSaveApiKeys = () => alert("API Keys saved successfully!");
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar (desktop) */}
-      <div className="hidden md:block">
-        <Sidebar />
-      </div>
+    <div className="flex h-screen bg-background overflow-hidden">
+      <Sidebar />
 
-      {/* Sidebar overlay (mobile) */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-40 flex md:hidden">
-          <div
-            className="fixed inset-0 bg-black/40"
-            onClick={() => setSidebarOpen(false)}
-          ></div>
-          <div className="relative z-50 w-64 bg-white shadow-lg">
-            <Sidebar />
-          </div>
-        </div>
-      )}
+
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b px-4 sm:px-6 py-3 flex items-center justify-between">
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu className="w-5 h-5 text-gray-700" />
-          </button>
+        <header className="bg-card border-b border-border px-4 sm:px-6 py-3 flex items-center justify-between">
+
 
           <input
             type="text"
@@ -118,7 +103,9 @@ export default function SettingsPage() {
 
           <div className="flex items-center gap-3 sm:gap-4">
             <Bell className="w-5 h-5 text-gray-600" />
-            <Sun className="w-5 h-5 text-gray-600" />
+                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
             <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
               A
             </div>
@@ -128,7 +115,7 @@ export default function SettingsPage() {
         {/* Settings Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           <h1 className="text-xl sm:text-2xl font-bold">Settings</h1>
-          <p className="text-gray-600 mb-6 text-sm sm:text-base">
+          <p className="text-muted-foreground mb-6 text-sm sm:text-base">
             Manage your account settings and preferences
           </p>
 
@@ -138,10 +125,10 @@ export default function SettingsPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-3 sm:px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                className={`px-3 sm:px-4 py-2 rounded-full text-sm font-medium border-border border transition-colors ${
                   activeTab === tab
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-card text-foreground hover:bg-muted"
                 }`}
               >
                 {tab}
@@ -151,8 +138,8 @@ export default function SettingsPage() {
 
          {/* ==================== PROFILE TAB ==================== */}
 {activeTab === "Profile" && (
-  <div className="bg-white border rounded-lg p-6 shadow-sm">
-    <h2 className="text-lg font-semibold mb-4 text-gray-800">Profile</h2>
+  <div className="bg-card border-border border rounded-lg p-6 shadow-sm">
+    <h2 className="text-lg font-semibold mb-4 text-foreground">Profile</h2>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {([
@@ -162,7 +149,7 @@ export default function SettingsPage() {
         ["company", "Company Name", Building],
       ] as const).map(([key, label, Icon]) => (
         <div key={key}>
-          <label className="text-sm text-gray-700 mb-1 block">{label}</label>
+          <label className="text-sm text-foreground mb-1 block">{label}</label>
           <div className="relative">
             <Icon className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
             <input
@@ -170,7 +157,7 @@ export default function SettingsPage() {
               value={formData[key]}
               onChange={handleChange}
               placeholder={`Enter ${label.toLowerCase()}`}
-              className="w-full border rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full border-border border rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none bg-card"
             />
           </div>
         </div>
@@ -191,14 +178,14 @@ export default function SettingsPage() {
 
           {/* ==================== SECURITY TAB ==================== */}
           {activeTab === "Security" && (
-            <div className="bg-white border rounded-lg p-6 shadow-sm space-y-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            <div className="bg-card border-border border rounded-lg p-6 shadow-sm space-y-6">
+              <h2 className="text-lg font-semibold text-foreground mb-2">
                 Security Settings
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {["current", "new", "confirm"].map((field) => (
                   <div key={field}>
-                    <label className="text-sm text-gray-700 capitalize">
+                    <label className="text-sm text-foreground capitalize">
                       {field} Password
                     </label>
                     <div className="relative">
@@ -210,7 +197,7 @@ export default function SettingsPage() {
                         onChange={(e) =>
                           setPasswords({ ...passwords, [field]: e.target.value })
                         }
-                        className="w-full border rounded-lg pl-9 pr-3 py-2 focus:ring-2 focus:ring-blue-100 outline-none"
+                        className="w-full border-border border rounded-lg pl-9 pr-3 py-2 focus:ring-2 focus:ring-primary outline-none bg-card"
                       />
                     </div>
                   </div>
@@ -222,17 +209,17 @@ export default function SettingsPage() {
               >
                 Change Password
               </button>
-              <div className="flex items-center justify-between border rounded-lg p-4 mt-4">
+              <div className="flex items-center justify-between border-border border rounded-lg p-4 mt-4">
                 <div>
-                  <p className="text-sm font-medium">Enable Two-Factor Authentication</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm font-medium text-foreground">Enable Two-Factor Authentication</p>
+                  <p className="text-xs text-muted-foreground">
                     Adds an extra layer of security to your account
                   </p>
                 </div>
                 <button
                   onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    twoFactorEnabled ? "bg-green-500" : "bg-gray-300"
+                    twoFactorEnabled ? "bg-green-500" : "bg-muted"
                   }`}
                 >
                   <span
@@ -247,8 +234,8 @@ export default function SettingsPage() {
 
           {/* ==================== NOTIFICATIONS TAB ==================== */}
           {activeTab === "Notifications" && (
-            <div className="bg-white border rounded-lg p-6 shadow-sm space-y-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            <div className="bg-card border-border border rounded-lg p-6 shadow-sm space-y-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">
                 Notification Preferences
               </h2>
 
@@ -266,11 +253,11 @@ export default function SettingsPage() {
               ].map((item) => (
                 <div
                   key={item.key}
-                  className="flex items-center justify-between border rounded-lg p-4"
+                  className="flex items-center justify-between border-border border rounded-lg p-4"
                 >
                   <div>
-                    <p className="text-sm font-medium">{item.title}</p>
-                    <p className="text-xs text-gray-500">{item.desc}</p>
+                    <p className="text-sm font-medium text-foreground">{item.title}</p>
+                    <p className="text-xs text-muted-foreground">{item.desc}</p>
                   </div>
                   <button
                     onClick={() =>
@@ -278,8 +265,8 @@ export default function SettingsPage() {
                     }
                     className={`relative w-12 h-6 rounded-full transition-colors ${
                       notifications[item.key as keyof typeof notifications]
-                        ? "bg-blue-600"
-                        : "bg-gray-300"
+                        ? "bg-primary"
+                        : "bg-muted"
                     }`}
                   >
                     <span
@@ -294,7 +281,7 @@ export default function SettingsPage() {
               ))}
 
               <div>
-                <h3 className="text-sm font-semibold mb-3 text-gray-800">
+                <h3 className="text-sm font-semibold mb-3 text-foreground">
                   Email me about…
                 </h3>
                 {[
@@ -306,17 +293,17 @@ export default function SettingsPage() {
                 ].map(([key, label]) => (
                   <div
                     key={key}
-                    className="flex items-center justify-between border-b py-2 text-sm"
+                    className="flex items-center justify-between border-b border-border py-2 text-sm"
                   >
-                    <span>{label}</span>
+                    <span className="text-foreground">{label}</span>
                     <button
                       onClick={() =>
                         handleNotificationChange(key as keyof typeof notifications)
                       }
                       className={`relative w-12 h-6 rounded-full transition-colors ${
                         notifications[key as keyof typeof notifications]
-                          ? "bg-blue-600"
-                          : "bg-gray-300"
+                          ? "bg-primary"
+                          : "bg-muted"
                       }`}
                     >
                       <span
@@ -344,50 +331,50 @@ export default function SettingsPage() {
 
           {/* ==================== INTEGRATIONS TAB ==================== */}
           {activeTab === "Integrations" && (
-            <div className="bg-white border rounded-lg p-6 shadow-sm space-y-8">
-              <h2 className="text-lg font-semibold text-gray-800">
+            <div className="bg-card border-border border rounded-lg p-6 shadow-sm space-y-8">
+              <h2 className="text-lg font-semibold text-foreground">
                 API Integrations
               </h2>
 
               <div className="space-y-4">
                 {/* WhatsApp Business API */}
                 <div>
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-foreground">
                     WhatsApp Business API Key
                   </label>
                   <div className="relative mt-1">
-                    <Key className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                    <Key className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
                     <input
                       name="whatsappApi"
                       type="text"
                       placeholder="Enter your WhatsApp API key"
                       value={integrations.whatsappApi}
                       onChange={handleIntegrationChange}
-                      className="w-full border rounded-lg pl-9 pr-3 py-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none"
+                      className="w-full border-border border rounded-lg pl-9 pr-3 py-2 bg-card focus:bg-card focus:ring-2 focus:ring-primary outline-none"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Get your API key from WhatsApp Business Platform
                   </p>
                 </div>
 
                 {/* Gmail API */}
                 <div>
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-sm font-medium text-foreground">
                     Gmail API Key
                   </label>
                   <div className="relative mt-1">
-                    <Key className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                    <Key className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
                     <input
                       name="gmailApi"
                       type="text"
                       placeholder="Enter your Gmail API key"
                       value={integrations.gmailApi}
                       onChange={handleIntegrationChange}
-                      className="w-full border rounded-lg pl-9 pr-3 py-2 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none"
+                      className="w-full border-border border rounded-lg pl-9 pr-3 py-2 bg-card focus:bg-card focus:ring-2 focus:ring-primary outline-none"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Configure Gmail API from Google Cloud Console
                   </p>
                 </div>
@@ -395,40 +382,40 @@ export default function SettingsPage() {
 
               {/* Connected Services */}
               <div>
-                <h3 className="text-sm font-semibold text-gray-800 mb-3">
+                <h3 className="text-sm font-semibold text-foreground mb-3">
                   Connected Services
                 </h3>
                 <div className="space-y-3">
                   {/* WhatsApp */}
-                  <div className="flex items-center justify-between border rounded-lg p-3">
+                  <div className="flex items-center justify-between border-border border rounded-lg p-3">
                     <div className="flex items-center gap-3">
                       <div className="bg-green-100 text-green-600 rounded-full p-2">
                         <MessageSquare className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">WhatsApp Business</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm font-medium text-foreground">WhatsApp Business</p>
+                        <p className="text-xs text-muted-foreground">
                           Connected 2 days ago
                         </p>
                       </div>
                     </div>
-                    <button className="text-sm border rounded-md px-3 py-1 hover:bg-gray-100">
+                    <button className="text-sm border-border border rounded-md px-3 py-1 hover:bg-muted">
                       Disconnect
                     </button>
                   </div>
 
                   {/* Gmail */}
-                  <div className="flex items-center justify-between border rounded-lg p-3">
+                  <div className="flex items-center justify-between border-border border rounded-lg p-3">
                     <div className="flex items-center gap-3">
-                      <div className="bg-gray-100 text-gray-600 rounded-full p-2">
+                      <div className="bg-muted text-muted-foreground rounded-full p-2">
                         <Mail className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">Gmail</p>
-                        <p className="text-xs text-gray-500">Not connected</p>
+                        <p className="text-sm font-medium text-foreground">Gmail</p>
+                        <p className="text-xs text-muted-foreground">Not connected</p>
                       </div>
                     </div>
-                    <button className="text-sm bg-blue-100 text-blue-600 rounded-md px-3 py-1 hover:bg-blue-200">
+                    <button className="text-sm bg-primary/10 text-primary rounded-md px-3 py-1 hover:bg-primary/20">
                       Connect
                     </button>
                   </div>

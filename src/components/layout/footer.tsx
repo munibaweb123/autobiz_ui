@@ -32,7 +32,7 @@ const supportLinks = [
 
 const contactInfo = [
   { icon: MapPin, text: "Karachi, Pakistan" },
-  { icon: Mail, text: "support@autobiz.pk" },
+  { icon: Mail, text: "support@bizauto.pk" },
   { icon: Phone, text: "+92 300 1234567" },
 ];
 
@@ -44,10 +44,8 @@ export function Footer() {
           {/* Logo & Socials */}
           <div className="md:col-span-4 lg:col-span-2">
             <Link href="/" className="flex items-center gap-2">
-              <span className="rounded-lg bg-indigo-600 p-2 text-white">
-                A
-              </span>
-              <span className="text-2xl font-bold text-white">AutoBiz</span>
+              <span className="rounded-lg bg-indigo-600 p-2 text-white">B</span>
+              <span className="text-2xl font-bold text-white">BizAuto</span>
             </Link>
             <p className="mt-4 max-w-xs text-sm">
               AI-powered business automation platform for traders and
@@ -123,7 +121,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 border-t border-gray-800 pt-8 text-center">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} AutoBiz. All rights reserved.
+            © {new Date().getFullYear()} BizAuto. All rights reserved.
           </p>
         </div>
       </div>

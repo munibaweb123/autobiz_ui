@@ -41,9 +41,9 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">AB</span>
+              <span className="text-primary-foreground font-bold text-lg">BA</span>
             </div>
-            <span className="text-xl font-bold">AutoBiz</span>
+            <span className="text-xl font-bold">BizAuto</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -125,9 +125,11 @@ const Header = () => {
                   </div>
 
                   <div className="flex flex-col gap-3 mt-4 pt-4 border-t">
-                    <Button variant="ghost" className="w-full justify-start">
-                      Sign In
-                    </Button>
+                    <Link href={"/signin"} onClick={() => setOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start">
+                        Sign In
+                      </Button>
+                    </Link>
                     <Button className="w-full bg-gradient-to-br from-[#7C3AED] to-[#EC4899] text-white rounded-md shadow-md hover:brightness-95 transition-opacity">
                       <Sparkles className="w-4 h-4 mr-2" />
                       <Link href={"/signUp"}>Get Started Free</Link>

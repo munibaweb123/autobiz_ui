@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/ui/button";
+import { Moon } from "lucide-react";
 import { Search, Eye, Pencil, Trash2, Bell, Sun, Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
@@ -41,17 +44,11 @@ const dummyClients: Client[] = [
 ];
 
 export default function CRMPage() {
+  const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Close sidebar when pressing Escape
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSidebarOpen(false);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+
+
 
   const filtered = dummyClients.filter(
     (c) =>
@@ -61,40 +58,17 @@ export default function CRMPage() {
   );
 
   return (
-    <div className="flex min-h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar (visible on large screens) */}
-      <div className="hidden lg:block">
-        <Sidebar />
-      </div>
+    <div className="flex min-h-screen bg-background overflow-hidden">
+      <Sidebar />
 
-      {/* Sidebar Drawer (mobile) */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-50 flex">
-          <div
-            className="w-64 bg-white shadow-lg h-full animate-slideIn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Sidebar />
-          </div>
-          <div
-            className="flex-1 bg-black/40"
-            onClick={() => setSidebarOpen(false)}
-          />
-        </div>
-      )}
+
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-y-auto transition-all duration-300 lg:ml-64">
         {/* Header */}
-        <header className="bg-white border-b px-4 md:px-6 py-3 flex items-center justify-between gap-3 sticky top-0 z-40">
+        <header className="bg-card border-b border-border px-4 md:px-6 py-3 flex items-center justify-between gap-3 sticky top-0 z-40">
           <div className="flex items-center gap-2 w-full sm:w-1/2">
-            {/* Sidebar toggle button (mobile only) */}
-            <button
-              className="lg:hidden p-2 rounded-md hover:bg-gray-100"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="w-5 h-5 text-gray-700" />
-            </button>
+
 
             <input
               type="text"
@@ -105,7 +79,9 @@ export default function CRMPage() {
 
           <div className="flex items-center gap-3">
             <Bell className="w-5 h-5 text-gray-600" />
-            <Sun className="w-5 h-5 text-gray-600" />
+                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
             <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
               M
             </div>
@@ -116,7 +92,7 @@ export default function CRMPage() {
         <div className="p-4 md:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <h1 className="text-xl md:text-2xl font-bold">CRM</h1>
-            <p className="text-gray-600 text-sm md:text-base">
+            <p className="text-muted-foreground text-sm md:text-base">
               Manage your clients and relationships
             </p>
           </div>
@@ -135,15 +111,15 @@ export default function CRMPage() {
               placeholder="Search clients by name, company, or phone..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border px-10 py-2 rounded-lg w-full bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="border-border border px-10 py-2 rounded-lg w-full bg-card text-sm focus:ring-2 focus:ring-primary focus:outline-none"
             />
           </div>
         </div>
 
         {/* Table */}
         <div className="px-4 md:px-6 pb-6 overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg border text-sm">
-            <thead className="bg-gray-100 text-gray-600 text-xs md:text-sm">
+          <table className="min-w-full bg-card rounded-lg border-border border text-sm">
+            <thead className="bg-muted text-muted-foreground text-xs md:text-sm">
               <tr>
                 <th className="p-3 text-left whitespace-nowrap">Name</th>
                 <th className="p-3 text-left whitespace-nowrap">Company</th>
@@ -159,7 +135,7 @@ export default function CRMPage() {
               {filtered.map((c, i) => (
                 <tr
                   key={i}
-                  className="border-b hover:bg-gray-50 text-gray-700 transition"
+                  className="border-b border-border hover:bg-muted text-foreground transition"
                 >
                   <td className="p-3">{c.name}</td>
                   <td className="p-3">{c.company}</td>
@@ -178,7 +154,7 @@ export default function CRMPage() {
           </table>
 
           {filtered.length === 0 && (
-            <p className="text-center text-gray-500 text-sm mt-6">
+            <p className="text-center text-muted-foreground text-sm mt-6">
               No clients found.
             </p>
           )}
