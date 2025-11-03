@@ -60,9 +60,11 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
+            <Link href={"/signin"}>
             <Button variant="ghost" className="hidden md:inline-flex">
               Sign In
             </Button>
+            </Link>
 
             {/* Theme toggle button */}
             <Button
