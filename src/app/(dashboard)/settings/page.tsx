@@ -149,42 +149,45 @@ export default function SettingsPage() {
             ))}
           </div>
 
-          {/* ==================== PROFILE TAB ==================== */}
-          {activeTab === "Profile" && (
-            <div className="bg-white border rounded-lg p-6 shadow-sm">
-              <h2 className="text-lg font-semibold mb-4 text-gray-800">Profile</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[
-                  ["fullName", "Full Name", User],
-                  ["phone", "Phone Number", Phone],
-                  ["email", "Email Address", Mail],
-                  ["company", "Company Name", Building],
-                ].map(([key, label, Icon]) => (
-                  <div key={key}>
-                    <label className="text-sm text-gray-700 mb-1 block">{label}</label>
-                    <div className="relative">
-                      <Icon className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-                      <input
-                        name={key}
-                        value={(formData as any)[key]}
-                        onChange={handleChange}
-                        placeholder={`Enter ${label.toLowerCase()}`}
-                        className="w-full border rounded-lg pl-9 pr-3 py-2 focus:ring-2 focus:ring-blue-100 outline-none"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-8 flex justify-end">
-                <button
-                  onClick={handleSaveProfile}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          )}
+         {/* ==================== PROFILE TAB ==================== */}
+{activeTab === "Profile" && (
+  <div className="bg-white border rounded-lg p-6 shadow-sm">
+    <h2 className="text-lg font-semibold mb-4 text-gray-800">Profile</h2>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {([
+        ["fullName", "Full Name", User],
+        ["phone", "Phone Number", Phone],
+        ["email", "Email Address", Mail],
+        ["company", "Company Name", Building],
+      ] as const).map(([key, label, Icon]) => (
+        <div key={key}>
+          <label className="text-sm text-gray-700 mb-1 block">{label}</label>
+          <div className="relative">
+            <Icon className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+            <input
+              name={key}
+              value={formData[key]}
+              onChange={handleChange}
+              placeholder={`Enter ${label.toLowerCase()}`}
+              className="w-full border rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="mt-8 flex justify-end">
+      <button
+        onClick={handleSaveProfile}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium"
+      >
+        Save Changes
+      </button>
+    </div>
+  </div>
+)}
+
 
           {/* ==================== SECURITY TAB ==================== */}
           {activeTab === "Security" && (
