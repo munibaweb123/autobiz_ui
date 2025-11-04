@@ -13,7 +13,15 @@ const AuthCard = ({ title, description, children }: AuthCardProps) => {
     <div
       className="min-h-screen w-full flex items-center justify-center p-4 bg-gradient-to-br from-[#e8f1ff] via-[#f2faff] to-[#e9fff2]"
     >
-      <Card className="w-full max-w-md rounded-2xl shadow-xl backdrop-blur-md p-6 bg-white/90 border border-gray-200">
+      <Card
+  className="
+    w-full max-w-md rounded-2xl shadow-xl backdrop-blur-md p-6
+
+    bg-white/80 border border-gray-200
+    dark:bg-[#0f172a]/60 dark:border-gray-700 dark:shadow-[0_0_10px_rgba(0,0,0,0.4)]
+  "
+>
+
         <CardHeader className="text-center space-y-2 pb-2">
           <div className="flex items-center justify-center gap-2 mb-1">
             <Sparkles className="h-7 w-7 text-blue-600" />
