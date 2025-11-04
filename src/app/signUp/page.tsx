@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import AuthCard from "@/components/AuthCard";
 
-
 const SignUp = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -29,7 +28,6 @@ const SignUp = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
     if (!formData.fullName || !formData.email || !formData.password || !formData.role) {
       toast.error("Please fill in all fields");
       return;
@@ -47,56 +45,70 @@ const SignUp = () => {
     }
 
     toast.success("Account created successfully!");
-
-    // Navigate to sign in
     router.push("/signin");
   };
 
   return (
     <AuthCard
-      title="AutoBiz"
+      title="BizzAuto"
       description="Create your business account"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="fullName">Full Name</Label>
+      <form onSubmit={handleSubmit} className="space-y-5 mt-2">
+
+        {/* FULL NAME */}
+        <div className="space-y-1">
+          <Label htmlFor="fullName" className="text-sm font-medium">
+            Full Name
+          </Label>
           <Input
             id="fullName"
             placeholder="Ahmed Khan"
             value={formData.fullName}
             onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-            className="bg-input"
+            className="h-11 bg-gray-100 border border-gray-200 focus:bg-white"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+        {/* EMAIL */}
+        <div className="space-y-1">
+          <Label htmlFor="email" className="text-sm font-medium">
+            Email
+          </Label>
           <Input
             id="email"
             type="email"
             placeholder="ahmed@company.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="bg-input"
+            className="h-11 bg-gray-100 border border-gray-200 focus:bg-white"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+        {/* PASSWORD */}
+        <div className="space-y-1">
+          <Label htmlFor="password" className="text-sm font-medium">
+            Password
+          </Label>
           <Input
             id="password"
             type="password"
             placeholder="••••••••"
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            className="bg-input"
+            className="h-11 bg-gray-100 border border-gray-200 focus:bg-white"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="role">Role</Label>
-          <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
-            <SelectTrigger id="role" className="bg-input">
+        {/* ROLE */}
+        <div className="space-y-1">
+          <Label htmlFor="role" className="text-sm font-medium">
+            Role
+          </Label>
+          <Select
+            value={formData.role}
+            onValueChange={(value) => setFormData({ ...formData, role: value })}
+          >
+            <SelectTrigger id="role" className="h-11 bg-gray-100 border border-gray-200 focus:bg-white">
               <SelectValue placeholder="Select your role" />
             </SelectTrigger>
             <SelectContent>
@@ -106,16 +118,21 @@ const SignUp = () => {
           </Select>
         </div>
 
-        <Button type="submit" className="w-full" size="lg">
+        {/* SUBMIT */}
+        <Button
+          type="submit"
+          className="w-full h-11 text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-md"
+        >
           Create Account
         </Button>
 
-        <div className="text-center text-sm text-muted-foreground">
+        {/* FOOTER */}
+        <div className="text-center text-sm text-gray-500">
           Already have an account?{" "}
           <button
             type="button"
             onClick={() => router.push("/signin")}
-            className="text-primary font-medium hover:underline"
+            className="text-blue-600 font-medium hover:underline"
           >
             Sign In
           </button>

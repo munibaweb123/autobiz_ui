@@ -32,7 +32,7 @@ const supportLinks = [
 
 const contactInfo = [
   { icon: MapPin, text: "Karachi, Pakistan" },
-  { icon: Mail, text: "support@bizauto.pk" },
+  { icon: Mail, text: "support@bizzauto.pk" },
   { icon: Phone, text: "+92 300 1234567" },
 ];
 
@@ -45,7 +45,7 @@ export function Footer() {
           <div className="md:col-span-4 lg:col-span-2">
             <Link href="/" className="flex items-center gap-2">
               <span className="rounded-lg bg-indigo-600 p-2 text-white">B</span>
-              <span className="text-2xl font-bold text-white">BizAuto</span>
+              <span className="text-2xl font-bold text-white">BizzAuto</span>
             </Link>
             <p className="mt-4 max-w-xs text-sm">
               AI-powered business automation platform for traders and

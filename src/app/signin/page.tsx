@@ -1,19 +1,18 @@
-'use client';
+"use client";
 import { useState } from "react";
-
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/hooks/use-toast";
 import AuthCard from "@/components/AuthCard";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const SignIn = () => {
   const router = useRouter();
- // Redirect to dashboard if already signed in
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,8 +34,8 @@ const SignIn = () => {
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!validEmail.test(formData.email)) {
       toast({
         title: "Invalid Email",
         description: "Enter a valid email address",
@@ -69,75 +68,75 @@ const SignIn = () => {
       title="AutoBiz"
       description="AI-Powered Business Automation Platform"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Email */}
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+        <div className="space-y-1">
+          <Label>Email</Label>
           <Input
-            id="email"
             type="email"
             placeholder="trader@example.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="bg-input"
           />
         </div>
 
         {/* Password */}
-        <div className="space-y-2 relative">
-          <Label htmlFor="password">Password</Label>
+        <div className="space-y-1 relative">
+          <Label>Password</Label>
           <Input
-            id="password"
             type={showPass ? "text" : "password"}
             placeholder="••••••••"
             value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            className="bg-input pr-10"
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            className="pr-10"
           />
+
           <button
             type="button"
-            className="absolute right-3 top-[38px] text-muted-foreground"
+            className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
             onClick={() => setShowPass(!showPass)}
           >
             {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
 
-        {/* Remember me */}
+        {/* Remember Me */}
         <div className="flex items-center space-x-2">
           <Checkbox
-            id="remember"
             checked={formData.remember}
-            onCheckedChange={(val: boolean) =>
-              setFormData({ ...formData, remember: val })
+            onCheckedChange={(val) =>
+              setFormData({ ...formData, remember: val as boolean })
             }
           />
-          <Label htmlFor="remember" className="cursor-pointer">
-            Remember me
-          </Label>
+          <Label className="cursor-pointer">Remember me</Label>
         </div>
 
-        {/* Button */}
-        <Button type="submit" className="w-full" size="lg" disabled={loading}>
+        {/* Submit */}
+        <Button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium"
+          disabled={loading}
+        >
           {loading ? "Signing in..." : "Sign In"}
         </Button>
 
-        {/* Links */}
-        <div className="text-center text-sm text-muted-foreground">
+        {/* Link */}
+        <div className="text-sm text-center text-gray-500">
           Don’t have an account?{" "}
           <button
             type="button"
             onClick={() => router.push("/signUp")}
-            className="text-primary font-medium hover:underline"
+            className="text-blue-600 font-semibold hover:underline"
           >
             Sign Up
           </button>
         </div>
 
-        <div className="mt-4 p-3 bg-primary/10 border border-primary/20 rounded-lg text-center">
-          <p className="text-sm text-primary">
-            Demo: any email / any password
-          </p>
+        {/* Demo Credentials */}
+        <div className="p-3 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg text-center text-xs">
+          Demo: any email / any password
         </div>
       </form>
     </AuthCard>
