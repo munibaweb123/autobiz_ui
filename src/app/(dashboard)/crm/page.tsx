@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
-import { Moon } from "lucide-react";
-import { Search, Eye, Pencil, Trash2, Bell, Sun, Menu } from "lucide-react";
-import Sidebar from "@/components/Sidebar";
+import { Moon, Sun, Search, Eye, Pencil, Trash2, Bell, Menu } from "lucide-react";
+import Sidebar, { NavigationContent } from "@/components/Sidebar";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 type Client = {
   name: string;
@@ -46,9 +48,7 @@ const dummyClients: Client[] = [
 export default function CRMPage() {
   const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState("");
-
-
-
+  const [open, setOpen] = useState(false);
 
   const filtered = dummyClients.filter(
     (c) =>
@@ -61,30 +61,47 @@ export default function CRMPage() {
     <div className="flex min-h-screen bg-background overflow-hidden">
       <Sidebar />
 
-
-
-      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-y-auto transition-all duration-300 lg:ml-64">
-        {/* Header */}
-        <header className="bg-card border-b border-border px-4 md:px-6 py-3 flex items-center justify-between gap-3 sticky top-0 z-40">
-          <div className="flex items-center gap-2 w-full sm:w-1/2">
+        <header className="border-b bg-card px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+          <div className="flex items-center gap-3">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="outline" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-64">
+                <SheetHeader className="px-4 py-2 border-b dark:border-gray-800">
+                  <SheetTitle>CRM Navigation</SheetTitle>
+                </SheetHeader>
+                <NavigationContent setOpen={setOpen} />
+              </SheetContent>
+            </Sheet>
 
-
-            <input
-              type="text"
-              placeholder="Search clients, invoices, products..."
-              className="border rounded-lg px-4 py-2 w-full text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
+            <div className="relative w-full max-w-xs">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                className="pl-10 bg-background"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <Bell className="w-5 h-5 text-gray-600" />
-                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive rounded-full text-[10px] text-white flex items-center justify-center">
+                3
+              </span>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
-              M
-            </div>
+            <Avatar>
+              <AvatarFallback className="bg-primary text-primary-foreground">M</AvatarFallback>
+            </Avatar>
           </div>
         </header>
 
@@ -100,20 +117,6 @@ export default function CRMPage() {
           <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg flex items-center gap-2 w-full sm:w-auto justify-center">
             + Add Client
           </button>
-        </div>
-
-        {/* Search bar */}
-        <div className="px-4 md:px-6 pb-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search clients by name, company, or phone..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border-border border px-10 py-2 rounded-lg w-full bg-card text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-            />
-          </div>
         </div>
 
         {/* Table */}

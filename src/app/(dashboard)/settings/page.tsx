@@ -3,21 +3,11 @@
 import { useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
-import { Moon } from "lucide-react";
-import {
-  Bell,
-  Sun,
-  User,
-  Mail,
-  Phone,
-  Building,
-  Menu,
-  Lock,
-  Monitor,
-  Key,
-  MessageSquare,
-} from "lucide-react";
-import Sidebar from "@/components/Sidebar";
+import { Moon, Sun, Bell, Menu, Search, User, Mail, Phone, Building, Lock, Monitor, Key, MessageSquare } from "lucide-react";
+import Sidebar, { NavigationContent } from "@/components/Sidebar";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export default function SettingsPage() {
   const { theme, toggleTheme } = useTheme();
@@ -29,7 +19,7 @@ export default function SettingsPage() {
   });
 
   const [activeTab, setActiveTab] = useState("Profile");
-
+  const [open, setOpen] = useState(false);
 
   // Security
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
@@ -84,31 +74,48 @@ export default function SettingsPage() {
   const handleSaveApiKeys = () => alert("API Keys saved successfully!");
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex min-h-screen bg-background overflow-hidden">
       <Sidebar />
 
+      <div className="flex-1 flex flex-col overflow-hidden lg:ml-64">
+        <header className="border-b bg-card px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+          <div className="flex items-center gap-3">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="outline" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-64">
+                <SheetHeader className="px-4 py-2 border-b dark:border-gray-800">
+                  <SheetTitle>Settings Navigation</SheetTitle>
+                </SheetHeader>
+                <NavigationContent setOpen={setOpen} />
+              </SheetContent>
+            </Sheet>
 
+            <div className="relative w-full max-w-xs">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                className="pl-10 bg-background"
+              />
+            </div>
+          </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-card border-b border-border px-4 sm:px-6 py-3 flex items-center justify-between">
-
-
-          <input
-            type="text"
-            placeholder="Search clients, invoices, products..."
-            className="hidden sm:block border rounded-lg px-4 py-2 w-1/2 text-sm"
-          />
-
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Bell className="w-5 h-5 text-gray-600" />
-                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive rounded-full text-[10px] text-white flex items-center justify-center">
+                3
+              </span>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
-              A
-            </div>
+            <Avatar>
+              <AvatarFallback className="bg-primary text-primary-foreground">M</AvatarFallback>
+            </Avatar>
           </div>
         </header>
 
@@ -125,9 +132,9 @@ export default function SettingsPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-3 sm:px-4 py-2 rounded-full text-sm font-medium border-border border transition-colors ${
+                className={`px-3 sm:px-4 py-2 rounded-full text-sm font-medium shadow transition-colors ${
                   activeTab === tab
-                    ? "bg-primary text-primary-foreground border-primary"
+                    ? "bg-blue-600 text-primary-foreground border-primary"
                     : "bg-card text-foreground hover:bg-muted"
                 }`}
               >

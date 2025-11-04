@@ -3,16 +3,17 @@
 import { useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
-import { Moon } from "lucide-react";
+import { Moon, Sun, Bell, Menu, Search } from "lucide-react";
+import Sidebar, { NavigationContent } from "@/components/Sidebar";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
-  Bell,
-  Sun,
   DollarSign,
   Users,
   Package,
   MessageSquare,
 } from "lucide-react";
-import Sidebar from "@/components/Sidebar";
 import {
   LineChart,
   Line,
@@ -66,6 +67,7 @@ const messageData = [
 export default function AnalyticsPage() {
   const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("Revenue");
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -75,20 +77,44 @@ export default function AnalyticsPage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-64 transition-all duration-300">
         {/* Header */}
-        <header className="bg-card border-b border-border px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-0 z-40 shadow-sm">
-          <input
-            type="text"
-            placeholder="Search clients, invoices, products..."
-            className="border rounded-lg px-4 py-2 w-full sm:w-1/2"
-          />
-          <div className="flex items-center gap-4">
-            <Bell className="w-5 h-5" />
-                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+        <header className="border-b bg-card px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+          <div className="flex items-center gap-3">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="outline" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-64">
+                <SheetHeader className="px-4 py-2 border-b dark:border-gray-800">
+                  <SheetTitle>Analytics Navigation</SheetTitle>
+                </SheetHeader>
+                <NavigationContent setOpen={setOpen} />
+              </SheetContent>
+            </Sheet>
+
+            <div className="relative w-full max-w-xs">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                className="pl-10 bg-background"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive rounded-full text-[10px] text-white flex items-center justify-center">
+                3
+              </span>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
-              A
-            </div>
+            <Avatar>
+              <AvatarFallback className="bg-primary text-primary-foreground">M</AvatarFallback>
+            </Avatar>
           </div>
         </header>
 
@@ -159,9 +185,9 @@ export default function AnalyticsPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-full border-border border text-sm font-medium ${
+                className={`px-4 py-2 rounded-full shadow text-sm font-medium ${
                   activeTab === tab
-                    ? "bg-primary text-primary-foreground border-primary"
+                    ? "bg-blue-600 text-primary-foreground border-primary"
                     : "bg-card text-foreground hover:bg-muted"
                 }`}
               >
@@ -259,7 +285,7 @@ export default function AnalyticsPage() {
 
           {/* MESSAGES TAB */}
           {activeTab === "Messages" && (
-            <div className="bg-card border-border border rounded-lg p-4 sm:p-6">
+            <div className="bg-card border rounded-lg p-4 sm:p-6">
               <h2 className="text-foreground font-semibold mb-4">
                 Message Activity
               </h2>

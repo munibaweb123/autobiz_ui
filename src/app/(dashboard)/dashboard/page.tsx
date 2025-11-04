@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -7,20 +8,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
   Users, DollarSign, Clock, Box, MessageSquare, FileText,
   UserPlus, Send, FileBarChart, Bell, Search, Sun, Moon, Menu
 } from "lucide-react";
 import {
   LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip
 } from "recharts";
-import Sidebar from "@/components/Sidebar";
+import Sidebar, { NavigationContent } from "@/components/Sidebar";
 
 const Dashboard = () => {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
-
-
-  const handleLogout = () => router.push("/signin");
+  const [open, setOpen] = useState(false);
 
   const revenueData = [
     { month: "Jan", value: 30000 },
@@ -48,26 +54,32 @@ const Dashboard = () => {
     <div className="flex min-h-screen bg-background overflow-hidden">
       <Sidebar />
 
-
-
-      {/* Main Content */}
       <div className="flex-1 flex flex-col transition-all duration-300 lg:ml-64">
-        {/* Header */}
-        <header className="border-b bg-card px-4 py-3 flex flex-col sm:flex-row gap-3 sm:gap-0 items-center justify-between sticky top-0 z-40">
-          <div className="flex items-center gap-3 w-full sm:w-1/2">
+        <header className="border-b bg-card px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+          <div className="flex items-center gap-3">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="outline" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-64">
+                <SheetHeader className="px-4 py-2 border-b dark:border-gray-800">
+                  <SheetTitle>Dashboard Navigation</SheetTitle>
+                </SheetHeader>
+                <NavigationContent setOpen={setOpen} />
+              </SheetContent>
+            </Sheet>
 
-
-            {/* Search Bar */}
-            <div className="relative w-full">
+            <div className="relative w-full max-w-xs">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search clients, invoices, products..."
-                className="pl-10 bg-background w-full"
+                placeholder="Search..."
+                className="pl-10 bg-background"
               />
             </div>
           </div>
 
-          {/* Header Icons */}
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
@@ -84,7 +96,6 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Dashboard Content */}
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">
           {/* Welcome Banner */}
           <div className="mb-6 p-6 md:p-8 rounded-xl bg-gradient-to-r from-blue-500 via-purple-500 to-teal-500 text-white text-center md:text-left">

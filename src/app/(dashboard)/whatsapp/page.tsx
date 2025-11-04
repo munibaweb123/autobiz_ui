@@ -3,16 +3,11 @@
 import { useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
-import { Moon } from "lucide-react";
-import {
-  Bell,
-  Sun,
-  MessageCircle,
-  Users,
-  Clock,
-  Menu,
-} from "lucide-react";
-import Sidebar from "@/components/Sidebar";
+import { Moon, Sun, Bell, Menu, Search, MessageCircle, Users, Clock } from "lucide-react";
+import Sidebar, { NavigationContent } from "@/components/Sidebar";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 type Contact = {
   name: string;
@@ -30,34 +25,51 @@ const dummyContacts: Contact[] = [
 export default function WhatsAppPage() {
   const { theme, toggleTheme } = useTheme();
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       <Sidebar />
 
+      <div className="flex-1 flex flex-col overflow-hidden lg:ml-64">
+        <header className="border-b bg-card px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+          <div className="flex items-center gap-3">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="outline" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-64">
+                <SheetHeader className="px-4 py-2 border-b dark:border-gray-800">
+                  <SheetTitle>WhatsApp Navigation</SheetTitle>
+                </SheetHeader>
+                <NavigationContent setOpen={setOpen} />
+              </SheetContent>
+            </Sheet>
 
+            <div className="relative w-full max-w-xs">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                className="pl-10 bg-background"
+              />
+            </div>
+          </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-card border-b border-border px-4 md:px-6 py-3 flex flex-col md:flex-row gap-3 md:gap-0 md:items-center md:justify-between">
-
-
-          <input
-            type="text"
-            placeholder="Search clients, invoices, products..."
-            className="border rounded-lg px-4 py-2 w-full md:w-1/2 text-sm"
-          />
-
-          <div className="flex items-center gap-4 self-end md:self-auto">
-            <Bell className="w-5 h-5 text-gray-600" />
-                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive rounded-full text-[10px] text-white flex items-center justify-center">
+                3
+              </span>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
-              A
-            </div>
+            <Avatar>
+              <AvatarFallback className="bg-primary text-primary-foreground">M</AvatarFallback>
+            </Avatar>
           </div>
         </header>
 

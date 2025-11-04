@@ -3,18 +3,11 @@
 import { useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
-import { Moon } from "lucide-react";
-import {
-  Search,
-  Bell,
-  Sun,
-  Plus,
-  Edit3,
-  Trash2,
-  AlertTriangle,
-  Menu,
-} from "lucide-react";
-import Sidebar from "@/components/Sidebar";
+import { Moon, Sun, Bell, Menu, Search, Plus, Edit3, Trash2, AlertTriangle } from "lucide-react";
+import Sidebar, { NavigationContent } from "@/components/Sidebar";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 type Product = {
   name: string;
@@ -35,7 +28,7 @@ const dummyProducts: Product[] = [
 export default function InventoryPage() {
   const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState("");
-
+  const [open, setOpen] = useState(false);
 
   const filtered = dummyProducts.filter(
     (p) =>
@@ -45,33 +38,50 @@ export default function InventoryPage() {
   );
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-background">
+    <div className="flex min-h-screen bg-background overflow-hidden">
       <Sidebar />
 
+      <div className="flex-1 flex flex-col overflow-y-auto transition-all duration-300 lg:ml-64">
+        <header className="border-b bg-card px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+          <div className="flex items-center gap-3">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="outline" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-64">
+                <SheetHeader className="px-4 py-2 border-b dark:border-gray-800">
+                  <SheetTitle>Inventory Navigation</SheetTitle>
+                </SheetHeader>
+                <NavigationContent setOpen={setOpen} />
+              </SheetContent>
+            </Sheet>
 
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-card border-b border-border px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-
-
-            <input
-              type="text"
-              placeholder="Search clients, invoices, products..."
-              className="border rounded-lg px-4 py-2 w-full sm:w-80"
-            />
+            <div className="relative w-full max-w-xs">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                className="pl-10 bg-background"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Bell className="w-5 h-5" />
-                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" className="relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive rounded-full text-[10px] text-white flex items-center justify-center">
+                3
+              </span>
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold">
-              A
-            </div>
+            <Avatar>
+              <AvatarFallback className="bg-primary text-primary-foreground">M</AvatarFallback>
+            </Avatar>
           </div>
         </header>
 
@@ -97,24 +107,6 @@ export default function InventoryPage() {
             <span className="font-medium">Low Stock Alert</span>
           </div>
           <p className="text-sm">— 76 items are running low on stock</p>
-        </div>
-
-        {/* Search + Export */}
-        <div className="px-4 md:px-6 pb-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <div className="relative w-full sm:w-1/2">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search products by name, SKU, or category..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border-border border px-10 py-2 rounded-lg w-full bg-card"
-            />
-          </div>
-
-          <button className="border-border border px-4 py-2 rounded-lg bg-card hover:bg-muted text-sm w-full sm:w-auto">
-            Export
-          </button>
         </div>
 
         {/* Table */}
