@@ -2,6 +2,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/co
 import { Menu, Sparkles, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { Button } from "../ui/button";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
