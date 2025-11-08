@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,31 @@ const Dashboard = () => {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [open, setOpen] = useState(false);
+  const [companyCount, setCompanyCount] = useState(0);
+  const [clientCount, setClientCount] = useState(0);
+  const [productCount, setProductCount] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [companiesRes, clientsRes, productsRes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/tables/companies"),
+          fetch("http://127.0.0.1:8000/tables/clients"),
+          fetch("http://127.0.0.1:8000/tables/products"),
+        ]);
+        const companies = await companiesRes.json();
+        const clients = await clientsRes.json();
+        const products = await productsRes.json();
+        setCompanyCount(companies.length);
+        setClientCount(clients.length);
+        setProductCount(products.length);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const revenueData = [
     { month: "Jan", value: 30000 },
@@ -129,24 +154,53 @@ const Dashboard = () => {
 
           {/* Stats Section */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-            {[
-              { title: "Total Revenue", value: "Rs 0", change: "↑ +12.5%", color: "text-green-600", icon: <DollarSign className="h-5 w-5 text-blue-500" /> },
-              { title: "Pending Payments", value: "Rs 0", change: "↓ -3.2%", color: "text-red-600", icon: <Clock className="h-5 w-5 text-blue-500" /> },
-              { title: "Active Clients", value: "237", change: "↑ +5", color: "text-green-600", icon: <Users className="h-5 w-5 text-blue-500" /> },
-              { title: "Low Stock Items", value: "78", change: "Items", color: "text-muted-foreground", icon: <Box className="h-5 w-5 text-blue-500" /> },
-              { title: "Messages Sent", value: "1000", change: "↑ +28", color: "text-green-600", icon: <MessageSquare className="h-5 w-5 text-blue-500" /> },
-            ].map((stat, i) => (
-              <Card key={i}>
-                <CardContent className="p-4 md:p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs md:text-sm text-muted-foreground">{stat.title}</p>
-                    {stat.icon}
-                  </div>
-                  <p className="text-lg md:text-2xl font-bold mb-1">{stat.value}</p>
-                  <p className={`text-xs ${stat.color}`}>{stat.change}</p>
-                </CardContent>
-              </Card>
-            ))}
+            <Card>
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs md:text-sm text-muted-foreground">Total Companies</p>
+                  <Users className="h-5 w-5 text-blue-500" />
+                </div>
+                <p className="text-lg md:text-2xl font-bold mb-1">{companyCount}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs md:text-sm text-muted-foreground">Active Clients</p>
+                  <Users className="h-5 w-5 text-blue-500" />
+                </div>
+                <p className="text-lg md:text-2xl font-bold mb-1">{clientCount}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs md:text-sm text-muted-foreground">Total Products</p>
+                  <Box className="h-5 w-5 text-blue-500" />
+                </div>
+                <p className="text-lg md:text-2xl font-bold mb-1">{productCount}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs md:text-sm text-muted-foreground">Pending Payments</p>
+                  <Clock className="h-5 w-5 text-blue-500" />
+                </div>
+                <p className="text-lg md:text-2xl font-bold mb-1">Rs 0</p>
+                <p className="text-xs text-red-600">↓ -3.2%</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs md:text-sm text-muted-foreground">Messages Sent</p>
+                  <MessageSquare className="h-5 w-5 text-blue-500" />
+                </div>
+                <p className="text-lg md:text-2xl font-bold mb-1">1000</p>
+                <p className="text-xs text-green-600">↑ +28</p>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Charts Section */}

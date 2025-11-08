@@ -11,7 +11,7 @@ interface AuthCardProps {
 const AuthCard = ({ title, description, children }: AuthCardProps) => {
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4 bg-gradient-to-br from-[#e8f1ff] via-[#f2faff] to-[#e9fff2]"
+      className="min-h-screen w-full flex items-center justify-center p-4 bg-app-gradient"
     >
       <Card
   className="

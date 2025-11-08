@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Bell, Menu, Search, MessageCircle, Users, Clock } from "lucide-react";
@@ -9,23 +9,31 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
-type Contact = {
-  name: string;
+type WhatsappLog = {
+  id: string;
   phone: string;
+  message: string;
 };
-
-const dummyContacts: Contact[] = [
-  { name: "XYZ Company", phone: "+92 321 7654321" },
-  { name: "Best Distributors", phone: "+92 333 9876543" },
-  { name: "ABC Traders", phone: "+92 300 1234567" },
-  { name: "XYZ Company", phone: "+92 321 7654321" },
-  { name: "Best Distributors", phone: "+92 333 9876543" },
-];
 
 export default function WhatsAppPage() {
   const { theme, toggleTheme } = useTheme();
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+  const [selectedContact, setSelectedContact] = useState<WhatsappLog | null>(null);
   const [open, setOpen] = useState(false);
+  const [logs, setLogs] = useState<WhatsappLog[]>([]);
+
+  useEffect(() => {
+    const fetchWhatsappLogs = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/tables/whatsapp_logs");
+        const data = await response.json();
+        setLogs(data);
+      } catch (error) {
+        console.error("Error fetching whatsapp logs:", error);
+      }
+    };
+
+    fetchWhatsappLogs();
+  }, []);
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -86,7 +94,7 @@ export default function WhatsAppPage() {
               <MessageCircle className="w-6 h-6 text-primary" />
               <div>
                 <p className="text-muted-foreground text-sm">Messages Sent</p>
-                <h2 className="text-lg md:text-xl font-semibold">0</h2>
+                <h2 className="text-lg md:text-xl font-semibold">{logs.length}</h2>
               </div>
             </div>
 
@@ -94,7 +102,7 @@ export default function WhatsAppPage() {
               <Users className="w-6 h-6 text-green-600" />
               <div>
                 <p className="text-muted-foreground text-sm">Active Contacts</p>
-                <h2 className="text-lg md:text-xl font-semibold">231</h2>
+                <h2 className="text-lg md:text-xl font-semibold">{logs.length}</h2>
               </div>
             </div>
 
@@ -121,22 +129,22 @@ export default function WhatsAppPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[65vh]">
             {/* Contacts List */}
             <div className="bg-card border-border border rounded-lg p-4 overflow-y-auto">
-              <h2 className="text-foreground font-semibold mb-3">Contacts</h2>
+              <h2 className="text-foreground font-semibold mb-3">Logs</h2>
               <ul>
-                {dummyContacts.map((c, i) => (
+                {logs.map((log, i) => (
                   <li
                     key={i}
-                    onClick={() => setSelectedContact(c)}
+                    onClick={() => setSelectedContact(log)}
                     className={`p-3 rounded-lg cursor-pointer mb-2 transition-colors ${
-                      selectedContact?.name === c.name
+                      selectedContact?.id === log.id
                         ? "bg-primary/10 border-primary/20 border"
                         : "hover:bg-muted"
                     }`}
                   >
                     <p className="font-medium text-foreground text-sm md:text-base">
-                      {c.name}
+                      {log.phone}
                     </p>
-                    <p className="text-xs md:text-sm text-muted-foreground">{c.phone}</p>
+                    <p className="text-xs md:text-sm text-muted-foreground">{log.message}</p>
                   </li>
                 ))}
               </ul>
@@ -150,10 +158,10 @@ export default function WhatsAppPage() {
                   <div className="border-b border-border p-3 md:p-4 bg-muted flex justify-between items-center">
                     <div>
                       <h2 className="font-medium text-foreground text-sm md:text-base">
-                        {selectedContact.name}
+                        {selectedContact.phone}
                       </h2>
                       <p className="text-xs text-muted-foreground">
-                        {selectedContact.phone}
+                        {selectedContact.message}
                       </p>
                     </div>
                     <span className="text-xs text-muted-foreground hidden sm:block">

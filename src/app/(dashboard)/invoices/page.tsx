@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Bell, Menu, Search, Upload, Plus } from "lucide-react";
@@ -11,41 +11,36 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/co
 
 type Invoice = {
   id: string;
-  client: string;
-  date: string;
-  dueDate: string;
-  amount: number;
-  status: string;
+  client_id: string;
+  invoice_date: string;
+  total_amount: number;
+  payment_status: string;
 };
-
-const dummyInvoices: Invoice[] = [
-  {
-    id: "INV-001",
-    client: "ABC Traders",
-    date: "20/10/2025",
-    dueDate: "27/10/2025",
-    amount: 25000,
-    status: "Paid",
-  },
-  {
-    id: "INV-002",
-    client: "Best Distributors",
-    date: "21/10/2025",
-    dueDate: "28/10/2025",
-    amount: 48000,
-    status: "Pending",
-  },
-];
 
 export default function InvoicesPage() {
   const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
 
-  const filtered = dummyInvoices.filter(
+  useEffect(() => {
+    const fetchInvoices = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/tables/invoices");
+        const data = await response.json();
+        setInvoices(data);
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    };
+
+    fetchInvoices();
+  }, []);
+
+  const filtered = invoices.filter(
     (i) =>
       i.id.toLowerCase().includes(search.toLowerCase()) ||
-      i.client.toLowerCase().includes(search.toLowerCase())
+      i.client_id.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -140,9 +135,8 @@ export default function InvoicesPage() {
               <thead className="bg-muted text-muted-foreground">
                 <tr>
                   <th className="p-3 text-left">Invoice #</th>
-                  <th className="p-3 text-left">Client</th>
+                  <th className="p-3 text-left">Client ID</th>
                   <th className="p-3 text-left">Date</th>
-                  <th className="p-3 text-left">Due Date</th>
                   <th className="p-3 text-left">Amount</th>
                   <th className="p-3 text-left">Status</th>
                   <th className="p-3 text-right">Actions</th>
@@ -154,21 +148,20 @@ export default function InvoicesPage() {
                   filtered.map((i, idx) => (
                     <tr key={idx} className="border-b border-border hover:bg-muted">
                       <td className="p-3">{i.id}</td>
-                      <td className="p-3">{i.client}</td>
-                      <td className="p-3">{i.date}</td>
-                      <td className="p-3">{i.dueDate}</td>
+                      <td className="p-3">{i.client_id}</td>
+                      <td className="p-3">{new Date(i.invoice_date).toLocaleDateString()}</td>
                       <td className="p-3 text-green-600">
-                        Rs {i.amount.toLocaleString()}
+                        Rs {i.total_amount.toLocaleString()}
                       </td>
                       <td className="p-3">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            i.status === "Paid"
+                            i.payment_status === "paid"
                               ? "bg-green-100 text-green-700"
                               : "bg-yellow-100 text-yellow-700"
                           }`}
                         >
-                          {i.status}
+                          {i.payment_status}
                         </span>
                       </td>
                       <td className="p-3 text-right text-blue-600 cursor-pointer">
@@ -199,22 +192,21 @@ export default function InvoicesPage() {
                     <h3 className="font-semibold text-foreground">{i.id}</h3>
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${
-                        i.status === "Paid"
+                        i.payment_status === "paid"
                           ? "bg-green-100 text-green-700"
                           : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
-                      {i.status}
+                      {i.payment_status}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">{i.client}</p>
+                  <p className="text-sm text-muted-foreground">{i.client_id}</p>
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Date: {i.date}</span>
-                    <span>Due: {i.dueDate}</span>
+                    <span>Date: {new Date(i.invoice_date).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between items-center mt-2">
                     <span className="font-medium text-green-600">
-                      Rs {i.amount.toLocaleString()}
+                      Rs {i.total_amount.toLocaleString()}
                     </span>
                     <button className="text-blue-600 text-sm font-medium">
                       View

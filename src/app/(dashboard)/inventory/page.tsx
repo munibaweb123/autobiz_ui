@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Bell, Menu, Search, Plus, Edit3, Trash2, AlertTriangle } from "lucide-react";
@@ -8,33 +8,95 @@ import Sidebar, { NavigationContent } from "@/components/Sidebar";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 type Product = {
+  id: string;
   name: string;
   sku: string;
   category: string;
-  quantity: number;
-  unitPrice: number;
+  stock_quantity: number;
+  sale_price: number;
+  company_id: string;
 };
-
-const dummyProducts: Product[] = [
-  { name: "N/A", sku: "FLOUR-20", category: "N/A", quantity: 200, unitPrice: 0 },
-  { name: "N/A", sku: "OIL-5L", category: "N/A", quantity: 80, unitPrice: 0 },
-  { name: "N/A", sku: "SUGAR-50", category: "N/A", quantity: 100, unitPrice: 0 },
-  { name: "N/A", sku: "RICE-50", category: "N/A", quantity: 150, unitPrice: 0 },
-  { name: "N/A", sku: "PULSE-10", category: "N/A", quantity: 15, unitPrice: 0 },
-];
 
 export default function InventoryPage() {
   const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  const filtered = dummyProducts.filter(
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/products");
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleAddClick = () => {
+    setEditingProduct(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleEditClick = (product: Product) => {
+    setEditingProduct(product);
+    setIsDialogOpen(true);
+  };
+
+  const handleDeleteClick = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        await fetch(`http://127.0.0.1:8000/api/products/${id}`, { method: "DELETE" });
+        fetchProducts();
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
+    }
+  };
+
+  const handleSave = async (productData: Omit<Product, 'id'>, id?: string) => {
+    console.log("Saving product:", productData);
+    console.log("editingProduct ID:", id);
+    try {
+      const url = id
+        ? `http://127.0.0.1:8000/api/products/${id}`
+        : "http://127.0.0.1:8000/api/products";
+      const method = id ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error saving product:", errorText);
+        alert("Failed to save product: " + errorText);
+        return;
+      }
+
+      fetchProducts();
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Error saving product:", error);
+    }
+  };
+
+  const filtered = products.filter(
     (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.sku.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase())
+      (p.sku && p.sku.toLowerCase().includes(search.toLowerCase())) ||
+      (p.category && p.category.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -94,7 +156,7 @@ export default function InventoryPage() {
             </p>
           </div>
 
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm">
+          <button onClick={handleAddClick} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm">
             <Plus className="w-4 h-4" />
             Add Product
           </button>
@@ -128,7 +190,7 @@ export default function InventoryPage() {
 
               <tbody>
                 {filtered.map((p, i) => {
-                  const isLowStock = p.quantity < 20;
+                  const isLowStock = p.stock_quantity < 20;
                   return (
                     <tr
                       key={i}
@@ -139,10 +201,10 @@ export default function InventoryPage() {
                       <td className="p-3">{p.name}</td>
                       <td className="p-3">{p.sku}</td>
                       <td className="p-3">{p.category}</td>
-                      <td className="p-3">{p.quantity}</td>
-                      <td className="p-3">Rs {p.unitPrice}</td>
+                      <td className="p-3">{p.stock_quantity}</td>
+                      <td className="p-3">Rs {p.sale_price}</td>
                       <td className="p-3">
-                        Rs {(p.quantity * p.unitPrice).toLocaleString()}
+                        Rs {(p.stock_quantity * p.sale_price).toLocaleString()}
                       </td>
                       <td className="p-3">
                         {isLowStock ? (
@@ -156,8 +218,8 @@ export default function InventoryPage() {
                         )}
                       </td>
                       <td className="p-3 flex justify-end gap-3">
-                        <Edit3 className="w-4 h-4 cursor-pointer text-muted-foreground hover:text-primary" />
-                        <Trash2 className="w-4 h-4 cursor-pointer text-muted-foreground hover:text-destructive" />
+                        <Edit3 onClick={() => handleEditClick(p)} className="w-4 h-4 cursor-pointer text-muted-foreground hover:text-primary" />
+                        <Trash2 onClick={() => handleDeleteClick(p.id)} className="w-4 h-4 cursor-pointer text-muted-foreground hover:text-destructive" />
                       </td>
                     </tr>
                   );
@@ -167,6 +229,52 @@ export default function InventoryPage() {
           </div>
         </div>
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingProduct ? "Edit Product" : "Add Product"}</DialogTitle>
+            <DialogDescription>
+              {editingProduct ? "Update the details of your product." : "Add a new product to your inventory."}
+            </DialogDescription>
+          </DialogHeader>
+          <ProductForm product={editingProduct} onSave={handleSave} />
+        </DialogContent>
+      </Dialog>
     </div>
+  );
+}
+
+function ProductForm({ product, onSave }: { product: Product | null, onSave: (productData: Omit<Product, 'id'>, id?: string) => void }) {
+  const [formData, setFormData] = useState(product || { name: '', sku: '', category: '', stock_quantity: 0, sale_price: 0, company_id: '94bb2f7b-5ce9-4f9b-b097-5ef45e75c2fa' });
+
+  useEffect(() => {
+    setFormData(product || { name: '', sku: '', category: '', stock_quantity: 0, sale_price: 0, company_id: '94bb2f7b-5ce9-4f9b-b097-5ef45e75c2fa' });
+  }, [product]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const isNumber = e.target.type === 'number';
+    setFormData(prev => ({ ...prev, [name]: isNumber ? Number(value) : value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData, product?.id);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="grid gap-4 py-4">
+        <Input name="name" value={formData.name} onChange={handleChange} placeholder="Product Name" />
+        <Input name="sku" value={formData.sku} onChange={handleChange} placeholder="SKU" />
+        <Input name="category" value={formData.category} onChange={handleChange} placeholder="Category" />
+        <Input name="stock_quantity" type="number" value={formData.stock_quantity} onChange={handleChange} placeholder="Quantity" />
+        <Input name="sale_price" type="number" value={formData.sale_price} onChange={handleChange} placeholder="Sale Price" />
+      </div>
+      <DialogFooter>
+        <Button type="submit">Save</Button>
+      </DialogFooter>
+    </form>
   );
 }

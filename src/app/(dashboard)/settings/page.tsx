@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Bell, Menu, Search, User, Mail, Phone, Building, Lock, Monitor, Key, MessageSquare } from "lucide-react";
@@ -12,10 +12,10 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/co
 export default function SettingsPage() {
   const { theme, toggleTheme } = useTheme();
   const [formData, setFormData] = useState({
-    fullName: "Ahmed",
-    phone: "+92 300 1234567",
-    email: "ahmed123@company.com",
-    company: "",
+    full_name: "",
+    phone: "",
+    email: "",
+    company_id: "",
   });
 
   const [activeTab, setActiveTab] = useState("Profile");
@@ -47,6 +47,49 @@ export default function SettingsPage() {
     whatsappConnected: true,
     gmailConnected: false,
   });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/tables/settings?user_id=eq.30fa1ad9-60dd-493e-93c6-1a63ac88595b");
+        const data = await response.json();
+        
+        const settings: any = {};
+        for (const setting of data) {
+          settings[setting.key] = setting.value;
+        }
+
+        setFormData({
+          full_name: settings.full_name || "",
+          phone: settings.phone || "",
+          email: settings.email || "",
+          company_id: settings.company_id || "",
+        });
+
+        setNotifications({
+          push: settings.notifications_push || true,
+          email: settings.notifications_email || true,
+          clientRegistration: settings.notifications_clientRegistration || true,
+          paymentReceived: settings.notifications_paymentReceived || true,
+          lowStock: settings.notifications_lowStock || true,
+          overdueInvoices: settings.notifications_overdueInvoices || true,
+          whatsappMessage: settings.notifications_whatsappMessage || false,
+        });
+
+        setIntegrations({
+          whatsappApi: settings.integrations_whatsappApi || "",
+          gmailApi: settings.integrations_gmailApi || "",
+          whatsappConnected: settings.integrations_whatsappConnected || true,
+          gmailConnected: settings.integrations_gmailConnected || false,
+        });
+
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -150,10 +193,10 @@ export default function SettingsPage() {
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {([
-        ["fullName", "Full Name", User],
+        ["full_name", "Full Name", User],
         ["phone", "Phone Number", Phone],
         ["email", "Email Address", Mail],
-        ["company", "Company Name", Building],
+        ["company_id", "Company ID", Building],
       ] as const).map(([key, label, Icon]) => (
         <div key={key}>
           <label className="text-sm text-foreground mb-1 block">{label}</label>
@@ -161,7 +204,7 @@ export default function SettingsPage() {
             <Icon className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
             <input
               name={key}
-              value={formData[key]}
+              value={formData[key as keyof typeof formData]}
               onChange={handleChange}
               placeholder={`Enter ${label.toLowerCase()}`}
               className="w-full border-border border rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none bg-card"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Bell, Menu, Search } from "lucide-react";
@@ -28,15 +28,6 @@ import {
 } from "recharts";
 
 // ===== Sample Chart Data =====
-const revenueData = [
-  { month: "Jan", revenue: 45000, profit: 10000 },
-  { month: "Feb", revenue: 50000, profit: 12000 },
-  { month: "Mar", revenue: 47000, profit: 11000 },
-  { month: "Apr", revenue: 60000, profit: 14000 },
-  { month: "May", revenue: 55000, profit: 13000 },
-  { month: "Jun", revenue: 65000, profit: 16000 },
-];
-
 const clientData = [
   { month: "Jan", clients: 45 },
   { month: "Feb", clients: 52 },
@@ -68,6 +59,31 @@ export default function AnalyticsPage() {
   const { theme, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("Revenue");
   const [open, setOpen] = useState(false);
+  const [revenueData, setRevenueData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/tables/expenses");
+        const data = await response.json();
+        
+        const processedData = data.reduce((acc: any, expense: any) => {
+          const month = new Date(expense.expense_date).toLocaleString('default', { month: 'short' });
+          if (!acc[month]) {
+            acc[month] = { month, revenue: 0 };
+          }
+          acc[month].revenue += expense.amount;
+          return acc;
+        }, {});
+
+        setRevenueData(Object.values(processedData));
+      } catch (error) {
+        console.error("Error fetching expenses:", error);
+      }
+    };
+
+    fetchExpenses();
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -216,13 +232,6 @@ export default function AnalyticsPage() {
                       type="monotone"
                       dataKey="revenue"
                       stroke="#3b82f6"
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="profit"
-                      stroke="#10b981"
                       strokeWidth={2}
                       dot={{ r: 4 }}
                     />

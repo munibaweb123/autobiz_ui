@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Search, Eye, Pencil, Trash2, Bell, Menu } from "lucide-react";
@@ -10,50 +10,38 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 type Client = {
+  id: string;
   name: string;
-  company: string;
+  company_id: string;
   phone: string;
-  invoices: number;
-  pending: number;
-  lastContact: string;
+  email: string;
+  address: string;
+  created_at: string;
 };
-
-const dummyClients: Client[] = [
-  {
-    name: "XYZ Company",
-    company: "xyz",
-    phone: "+92 321 7654321",
-    invoices: 0,
-    pending: 0,
-    lastContact: "18/10/2025",
-  },
-  {
-    name: "Best Distributors",
-    company: "Best Distributors",
-    phone: "+92 333 9876543",
-    invoices: 0,
-    pending: 0,
-    lastContact: "18/10/2025",
-  },
-  {
-    name: "ABC Traders",
-    company: "ABC Traders",
-    phone: "+92 300 1234567",
-    invoices: 0,
-    pending: 0,
-    lastContact: "18/10/2025",
-  },
-];
 
 export default function CRMPage() {
   const { theme, toggleTheme } = useTheme();
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [clients, setClients] = useState<Client[]>([]);
 
-  const filtered = dummyClients.filter(
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/tables/clients");
+        const data = await response.json();
+        setClients(data);
+      } catch (error) {
+        console.error("Error fetching clients:", error);
+      }
+    };
+
+    fetchClients();
+  }, []);
+
+  const filtered = clients.filter(
     (c) =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.company.toLowerCase().includes(search.toLowerCase()) ||
       c.phone.includes(search)
   );
 
@@ -125,11 +113,10 @@ export default function CRMPage() {
             <thead className="bg-muted text-muted-foreground text-xs md:text-sm">
               <tr>
                 <th className="p-3 text-left whitespace-nowrap">Name</th>
-                <th className="p-3 text-left whitespace-nowrap">Company</th>
+                <th className="p-3 text-left whitespace-nowrap">Email</th>
                 <th className="p-3 text-left whitespace-nowrap">Phone</th>
-                <th className="p-3 text-left whitespace-nowrap">Invoices</th>
-                <th className="p-3 text-left whitespace-nowrap">Pending</th>
-                <th className="p-3 text-left whitespace-nowrap">Last Contact</th>
+                <th className="p-3 text-left whitespace-nowrap">Address</th>
+                <th className="p-3 text-left whitespace-nowrap">Created At</th>
                 <th className="p-3 text-right whitespace-nowrap">Actions</th>
               </tr>
             </thead>
@@ -141,11 +128,10 @@ export default function CRMPage() {
                   className="border-b border-border hover:bg-muted text-foreground transition"
                 >
                   <td className="p-3">{c.name}</td>
-                  <td className="p-3">{c.company}</td>
+                  <td className="p-3">{c.email}</td>
                   <td className="p-3">{c.phone}</td>
-                  <td className="p-3">{c.invoices}</td>
-                  <td className="p-3 text-green-600">Rs {c.pending}</td>
-                  <td className="p-3">{c.lastContact}</td>
+                  <td className="p-3">{c.address}</td>
+                  <td className="p-3">{new Date(c.created_at).toLocaleDateString()}</td>
                   <td className="p-3 flex justify-end gap-2">
                     <Eye className="w-4 h-4 cursor-pointer hover:text-blue-600" />
                     <Pencil className="w-4 h-4 cursor-pointer hover:text-yellow-600" />
