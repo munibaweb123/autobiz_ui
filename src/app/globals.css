@@ -86,7 +86,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --app-gradient-from: #e8f1ff;
+  --app-gradient-via: #f2faff;
+  --app-gradient-to: #e9fff2;
 }
+
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -120,6 +124,20 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --app-gradient-from: #0d1520;
+  --app-gradient-via: #0f1a25;
+  --app-gradient-to: #0d1d18;
+}
+
+@layer components {
+  .bg-app-gradient {
+    background-image: linear-gradient(
+      to bottom right,
+      var(--app-gradient-from),
+      var(--app-gradient-via),
+      var(--app-gradient-to)
+    );
+  }
 }
 
 @layer base {
